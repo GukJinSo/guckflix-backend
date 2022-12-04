@@ -1,6 +1,6 @@
 package guckflix.backend.service;
 
-import guckflix.backend.dto.VideoDto;
+import guckflix.backend.dto.response.VideoDto;
 import guckflix.backend.entity.Video;
 import guckflix.backend.repository.VideoRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @RequiredArgsConstructor
 @Slf4j

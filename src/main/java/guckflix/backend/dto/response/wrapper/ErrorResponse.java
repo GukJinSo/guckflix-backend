@@ -1,4 +1,4 @@
-package guckflix.backend.dto.response;
+package guckflix.backend.dto.response.wrapper;
 
 import lombok.Getter;
 

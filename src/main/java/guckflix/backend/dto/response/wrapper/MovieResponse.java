@@ -1,9 +1,8 @@
-package guckflix.backend.dto.response;
+package guckflix.backend.dto.response.wrapper;
 
-import guckflix.backend.dto.MovieDto;
+import guckflix.backend.dto.response.MovieDto;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 

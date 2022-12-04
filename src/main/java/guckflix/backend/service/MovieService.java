@@ -1,7 +1,7 @@
 package guckflix.backend.service;
 
 import guckflix.backend.config.GenreCached;
-import guckflix.backend.dto.MovieDto;
+import guckflix.backend.dto.response.MovieDto;
 import guckflix.backend.entity.Movie;
 import guckflix.backend.exception.RuntimeMovieNotFoundException;
 import guckflix.backend.repository.MovieRepository;

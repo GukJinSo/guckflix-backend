@@ -1,4 +1,4 @@
-package guckflix.backend.dto;
+package guckflix.backend.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
