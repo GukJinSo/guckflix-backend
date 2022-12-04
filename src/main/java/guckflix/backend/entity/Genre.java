@@ -12,6 +12,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Builder
 @Getter
+@EqualsAndHashCode
 public class Genre {
 
     @Id @GeneratedValue private Long id;

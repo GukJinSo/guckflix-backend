@@ -1,11 +1,9 @@
 package guckflix.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@EqualsAndHashCode
 public class Movie {
 
     @Id private Long id;
@@ -39,6 +38,9 @@ public class Movie {
     private String posterPath;
 
     @OneToMany(mappedBy = "movie")
-    private List<Credit> credits = new ArrayList<>();
+    public List<Credit> credits = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    public List<Video> videos = new ArrayList<>();
 
 }

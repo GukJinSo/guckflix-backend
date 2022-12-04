@@ -1,19 +1,16 @@
 package guckflix.backend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Getter
+@EqualsAndHashCode
 public class Actor {
 
     @Column(name = "actor_id")
@@ -24,4 +21,8 @@ public class Actor {
     private String profilePath;
 
     private float popularity;
+
+    @OneToMany
+    @JoinColumn(name = "actor_id")
+    private List<Credit> credits;
 }

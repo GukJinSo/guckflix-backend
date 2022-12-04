@@ -5,7 +5,6 @@ import guckflix.backend.dto.MovieDto;
 import guckflix.backend.entity.Movie;
 import guckflix.backend.exception.RuntimeMovieNotFoundException;
 import guckflix.backend.repository.MovieRepository;
-import guckflix.backend.repository.MovieRepositoryQuerydsl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class MovieService {
 
     private final MovieRepository movieRepository;
-    private final MovieRepositoryQuerydsl movieRepositoryQuerydsl;
+
 
     public List<MovieDto> findPopular(int offset, int limit){
         List<Movie> popular = movieRepository.findPopular(offset, limit);
@@ -50,10 +49,14 @@ public class MovieService {
     }
 
     public List<MovieDto> findSimilar(Long id, int offset, int limit) {
-        List<Movie> similars = movieRepositoryQuerydsl.findSimilarByGenre(id, offset, limit);
+        Movie findMovie = movieRepository.findById(id);
+        String movieGenres = findMovie.getGenres();
+        List<String> genreList = new ArrayList<>(Arrays.asList(movieGenres.split(",")));
+        List<Movie> findMovies = movieRepository.findSimilarByGenres(findMovie.getId(), genreList, offset, limit);
         List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : similars) {
-            dtos.add(movieEntityToDto(movie));
+        for (Movie movie : findMovies) {
+            MovieDto movieDto = movieEntityToDto(movie);
+            dtos.add(movieDto);
         }
         return dtos;
     }
@@ -84,5 +87,6 @@ public class MovieService {
         List<Map.Entry<Long, String>> collect = genreMap.entrySet().stream().collect(Collectors.toList());
         return collect;
     }
+
 
 }

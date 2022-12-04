@@ -1,15 +1,16 @@
 package guckflix.backend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
+@EqualsAndHashCode
 public class Credit {
 
     @Id @GeneratedValue @Column(name = "credit_id")
@@ -18,13 +19,15 @@ public class Credit {
     @Column(length = 500)
     private String casting;
 
-    private Integer castingOrder;
+    @Column(name = "casting_order")
+    private Integer order;
 
     @JoinColumn(name = "movie_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Movie movie;
 
     @JoinColumn(name = "actor_id")
-    private Long actorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Actor actor;
 
 }

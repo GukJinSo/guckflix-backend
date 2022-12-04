@@ -15,11 +15,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
+@EqualsAndHashCode
 public class Video {
 
     // tmdb api는 String uuid 62c041a322e4800fa8f138eb와 같은 방식으로 저장하므로 따르기로 한다.
     @Id @Column(name = "video_id", length = 30)
     private String id;
+
+    @JoinColumn(name = "movie_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Movie movie;
 
     @Column(name = "video_name")
     private String name;

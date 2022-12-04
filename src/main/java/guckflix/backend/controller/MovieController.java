@@ -1,15 +1,21 @@
 package guckflix.backend.controller;
 
+import guckflix.backend.dto.CreditDto;
 import guckflix.backend.dto.MovieDto;
+import guckflix.backend.dto.VideoDto;
+import guckflix.backend.dto.response.CreditResponse;
 import guckflix.backend.dto.response.MovieResponse;
-import guckflix.backend.entity.Movie;
+import guckflix.backend.dto.response.VideoResponse;
+import guckflix.backend.service.CreditService;
 import guckflix.backend.service.MovieService;
+import guckflix.backend.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @RestController
@@ -17,6 +23,8 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
+    private final CreditService creditService;
+    private final VideoService videoService;
 
     /**
      * popularity 기준 페이징
@@ -67,8 +75,26 @@ public class MovieController {
         return ResponseEntity.ok(new MovieResponse(paging, queryResult));
     }
 
+    /**
+     * 크레딧(배역, 배우) 보기
+     */
+    @GetMapping("/movie/{movieId}/credits")
+    public ResponseEntity<CreditResponse> credits(@PathVariable Long movieId) {
+        List<CreditDto> credit = creditService.findActors(movieId);
+        return ResponseEntity.ok(new CreditResponse(movieId, credit));
+    }
 
-//
+    /**
+     * 영화 비디오(트레일러 등) 리스트
+     */
+    @GetMapping("/movie/{movieId}/videos")
+    public ResponseEntity<VideoResponse> videos(@PathVariable Long movieId,
+                                                Locale locale) {
+        List<VideoDto> result = videoService.findById(movieId, locale.getLanguage());
+        return ResponseEntity.ok(new VideoResponse(movieId, result));
+    }
+
+    //
 //    /**
 //     * 평점 내기
 //     */
@@ -82,13 +108,7 @@ public class MovieController {
 //        return null;
 //    }
 //
-//    /**
-//     * 배역 보기
-//     */
-//    @GetMapping("/movie/{movie_id}/actors")
-//    public String () {
-//        return null;
-//    }
+    //    /**
 
 
 
