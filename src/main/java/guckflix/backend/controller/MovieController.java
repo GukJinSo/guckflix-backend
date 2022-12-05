@@ -1,13 +1,13 @@
 package guckflix.backend.controller;
 
+import guckflix.backend.dto.request.PagingRequest;
 import guckflix.backend.dto.request.ReviewRequest;
 import guckflix.backend.dto.response.CreditDto;
 import guckflix.backend.dto.response.MovieDto;
 import guckflix.backend.dto.response.ReviewDto;
 import guckflix.backend.dto.response.VideoDto;
 import guckflix.backend.dto.response.wrapper.CreditResponse;
-import guckflix.backend.dto.response.wrapper.MovieResponse;
-import guckflix.backend.dto.response.wrapper.ReviewResponse;
+import guckflix.backend.dto.response.wrapper.Paging;
 import guckflix.backend.dto.response.wrapper.VideoResponse;
 import guckflix.backend.service.CreditService;
 import guckflix.backend.service.MovieService;
@@ -35,27 +35,20 @@ public class MovieController {
      * popularity 기준 페이징
      */
     @GetMapping("/movies/popular")
-    public ResponseEntity<MovieResponse> popular(@RequestParam(required = false, defaultValue = "1") int page,
-                                                 @RequestParam(defaultValue = "20") int limit) {
-        // 뷰에서 볼 페이지 요청 번호. 0페이지여도 1페이지, 1페이지면 1페이지라고 나와야 함
-        int paging = page == 0 ? 1 : page;
-        // 몇 번째 컬럼부터 볼 건지 정할 offset
-        int offset = page - 1 >= 0 ? (page - 1 ) * limit : 0;
-        List<MovieDto> queryResult = movieService.findPopular(offset, limit);
-        return ResponseEntity.ok(new MovieResponse(paging, queryResult));
+    public ResponseEntity<Paging> popular(PagingRequest pagingRequest) {
+        Paging<MovieDto> popular = movieService.findPopular(pagingRequest);
+        return ResponseEntity.ok(popular);
     }
+
 
     /**
      * 투표 가중치 기준 페이징
      * 투표 가중치 : guckflix.backend.config.QueryWeight
      */
     @GetMapping("/movies/top-rated")
-    public ResponseEntity<MovieResponse> topRated(@RequestParam(required = false, defaultValue = "1") int page,
-                                                  @RequestParam(defaultValue = "20") int limit) {
-        int paging = page == 0 ? 1 : page;
-        int offset = page - 1 >= 0 ? (page - 1 ) * limit : 0;
-        List<MovieDto> queryResult = movieService.findTopRated(offset, limit);
-        return ResponseEntity.ok(new MovieResponse(paging, queryResult));
+    public ResponseEntity<Paging> topRated(PagingRequest pagingRequest) {
+        Paging<MovieDto> topRated = movieService.findTopRated(pagingRequest);
+        return ResponseEntity.ok(topRated);
     }
 
     /**
@@ -71,13 +64,10 @@ public class MovieController {
      * 유사한 영화 보기
      */
     @GetMapping("/movies/{movieId}/similar")
-    public ResponseEntity<MovieResponse> similar(@PathVariable Long movieId,
-                                                 @RequestParam(required = false, defaultValue = "1") int page,
-                                                 @RequestParam(defaultValue = "20") int limit) {
-        int paging = page == 0 ? 1 : page;
-        int offset = page - 1 >= 0 ? (page - 1 ) * limit : 0;
-        List<MovieDto> queryResult = movieService.findSimilar(movieId, offset, limit);
-        return ResponseEntity.ok(new MovieResponse(paging, queryResult));
+    public ResponseEntity<Paging> similar(@PathVariable Long movieId,
+                                                 PagingRequest pagingRequest) {
+        Paging<MovieDto> similar = movieService.findSimilar(movieId, pagingRequest);
+        return ResponseEntity.ok(similar);
     }
 
     /**
@@ -103,19 +93,15 @@ public class MovieController {
      * 리뷰 조회
      */
     @GetMapping("/movies/{movieId}/reviews")
-    public ResponseEntity<ReviewResponse> reviews(@PathVariable Long movieId,
-                                                  @RequestParam(required = false, defaultValue = "1") int page,
-                                                  @RequestParam(defaultValue = "20") int limit) {
-        int paging = page == 0 ? 1 : page;
-        int offset = page - 1 >= 0 ? (page - 1 ) * limit : 0;
-        List<ReviewDto> result = reviewService.findAllById(movieId, offset, limit);
-        return ResponseEntity.ok().body(new ReviewResponse(paging,result));
+    public ResponseEntity<Paging> reviews(@PathVariable Long movieId, PagingRequest pagingRequest) {
+        Paging<ReviewDto> reviews = reviewService.findAllById(movieId, pagingRequest);
+        return ResponseEntity.ok().body(reviews);
     }
 
     /**
      * 리뷰 작성
      */
-    @PostMapping(value = "/movies/{movieId}/reviews")
+    @PostMapping("/movies/{movieId}/reviews")
     public ResponseEntity<ReviewDto> reviewsPost(@PathVariable Long movieId,
     @RequestBody ReviewRequest form) {
         ReviewDto dto = new ReviewDto();
@@ -126,16 +112,17 @@ public class MovieController {
         return ResponseEntity.ok().body(reviewService.findById(findId));
     }
 
-//
-//    /**
-//     * 영화 검색
-//     */
-//    @GetMapping("/movies/search")
-//    public String () {
-//        return null;
-//    }
-//
-        //    /**
+
+    /**
+     * 영화 검색
+
+    @GetMapping("/movies/search")
+    public ResponseEntity<Paging> search(@RequestParam String keyword) {
+        movieService.findByKeyword(keyword);
+        return ResponseEntity.ok().body(new Paging(0, null));
+    }
+
+    */
 
 
 

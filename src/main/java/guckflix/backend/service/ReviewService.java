@@ -1,6 +1,9 @@
 package guckflix.backend.service;
 
+import guckflix.backend.dto.request.PagingRequest;
+import guckflix.backend.dto.response.MovieDto;
 import guckflix.backend.dto.response.ReviewDto;
+import guckflix.backend.dto.response.wrapper.Paging;
 import guckflix.backend.entity.Review;
 import guckflix.backend.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,36 +21,26 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
 
-    public List<ReviewDto> findAllById(Long movieId, int offset, int limit) {
-        List<Review> findReviews = reviewRepository.findByMovieId(movieId, offset, limit);
+    public Paging<ReviewDto> findAllById(Long movieId, PagingRequest pagingRequest) {
+        Paging<Review> reviews = reviewRepository.findByMovieId(movieId, pagingRequest);
         List<ReviewDto> dtos = new ArrayList<>();
-        for (Review findReview : findReviews) {
-            dtos.add(reviewEntityToDto(findReview));
+        for (Review findReview : reviews.getList()) {
+            dtos.add(new ReviewDto(findReview));
         }
-        return dtos;
+        return new Paging<ReviewDto>(reviews.getRequestPage(), dtos, reviews.getTotalCount(),reviews.getTotalPage(), reviews.getSize());
     }
 
     public ReviewDto findById(Long reviewId){
         Review entity = reviewRepository.findById(reviewId);
-        return reviewEntityToDto(entity);
+        return new ReviewDto(entity);
     }
 
     @Transactional
     public Long save(ReviewDto dto){
-        return reviewRepository.save(reviewDtoToEntity(dto));
+        return reviewRepository.save(dtoToEntity(dto));
     }
 
-    private ReviewDto reviewEntityToDto(Review entity){
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewId(entity.getId());
-        reviewDto.setContent(entity.getContent());
-        reviewDto.setCreatedAt(entity.getCreatedAt());
-        reviewDto.setLastModifiedAt(entity.getLastModifiedAt());
-        reviewDto.setVoteRating(entity.getVoteRating());
-        return reviewDto;
-    }
-
-    private Review reviewDtoToEntity(ReviewDto dto){
+    private Review dtoToEntity(ReviewDto dto){
         Review entity = Review.builder()
                 .id(dto.getReviewId())
                 .userId(dto.getUserId())

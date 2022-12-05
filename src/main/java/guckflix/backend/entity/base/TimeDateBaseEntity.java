@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class TimeDateBaseEntity {
 
-    // Entity가 생성되어 저장될 때 시간이 자동 저장
+    // Entity 생성되어 저장될 때 자동 저장
     @CreatedDate
     @Column(name = "create_at")
     private LocalDateTime createdAt;
 
-    // 조회한 Entity 값을 변경할 때 시간이 자동 저장됩니다.
+    // Entity 값을 변경할 때 자동 저장
     @LastModifiedDate
     @Column(name = "last_modified_at")
     private LocalDateTime lastModifiedAt;

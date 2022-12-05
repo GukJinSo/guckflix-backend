@@ -1,7 +1,9 @@
 package guckflix.backend.service;
 
 import guckflix.backend.config.GenreCached;
+import guckflix.backend.dto.request.PagingRequest;
 import guckflix.backend.dto.response.MovieDto;
+import guckflix.backend.dto.response.wrapper.Paging;
 import guckflix.backend.entity.Movie;
 import guckflix.backend.exception.RuntimeMovieNotFoundException;
 import guckflix.backend.repository.MovieRepository;
@@ -10,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -22,71 +22,54 @@ public class MovieService {
     private final MovieRepository movieRepository;
 
 
-    public List<MovieDto> findPopular(int offset, int limit){
-        List<Movie> popular = movieRepository.findPopular(offset, limit);
-        List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : popular) {
-            dtos.add(movieEntityToDto(movie));
-        }
-        return dtos;
-    }
-
-    public List<MovieDto> findTopRated(int offset, int limit) {
-        List<Movie> topRated = movieRepository.findTopRated(offset, limit);
-        List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : topRated) {
-            dtos.add(movieEntityToDto(movie));
-        }
-        return dtos;
-    }
-
     public MovieDto findById(Long id){
         try {
-            return movieEntityToDto(movieRepository.findById(id));
+            MovieDto movieDto = new MovieDto((movieRepository.findById(id)));
+            return movieDto;
         } catch (EmptyResultDataAccessException e) {
             throw new RuntimeMovieNotFoundException("MOVIE NOT FOUND" , e);
         }
     }
 
-    public List<MovieDto> findSimilar(Long id, int offset, int limit) {
+    public Paging<MovieDto> findSimilar(Long id, PagingRequest pagingRequest) {
         Movie findMovie = movieRepository.findById(id);
         String movieGenres = findMovie.getGenres();
         List<String> genreList = new ArrayList<>(Arrays.asList(movieGenres.split(",")));
-        List<Movie> findMovies = movieRepository.findSimilarByGenres(findMovie.getId(), genreList, offset, limit);
+        Paging<Movie> similar = movieRepository.findSimilarByGenres(findMovie.getId(), genreList, pagingRequest);
         List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : findMovies) {
-            MovieDto movieDto = movieEntityToDto(movie);
+        for (Movie movie : similar.getList()) {
+            MovieDto movieDto = new MovieDto(movie);
             dtos.add(movieDto);
+        }
+        return new Paging<MovieDto>(similar.getRequestPage(), dtos, similar.getTotalCount(),similar.getTotalPage(), similar.getSize());
+    }
+
+    public Paging<MovieDto> findPopular(PagingRequest pagingRequest) {
+        Paging<Movie> popular = movieRepository.findPopular(pagingRequest);
+        List<MovieDto> dtos = new ArrayList<>();
+        for (Movie movie : popular.getList()) {
+            dtos.add(new MovieDto(movie));
+        }
+        return new Paging<MovieDto>(pagingRequest.getRequestPage(), dtos, popular.getTotalCount(),popular.getTotalPage(), popular.getSize());
+    }
+
+    public Paging<MovieDto> findTopRated(PagingRequest pagingRequest) {
+        Paging<Movie> topRated = movieRepository.findTopRated(pagingRequest);
+        List<MovieDto> dtos = new ArrayList<>();
+        for (Movie movie : topRated.getList()) {
+            dtos.add(new MovieDto(movie));
+        }
+        return new Paging<MovieDto>(pagingRequest.getRequestPage(), dtos, topRated.getTotalCount(), topRated.getTotalPage(), topRated.getSize());
+    }
+
+    /**
+    public List<MovieDto> findByKeyword(String keyword) {
+        List<Movie> list = movieRepository.findByKeyword(keyword);
+        List<MovieDto> dtos = new ArrayList<>();
+        for (Movie movie : list) {
+            dtos.add(new MovieDto(movie));
         }
         return dtos;
     }
-
-    private MovieDto movieEntityToDto(Movie entity){
-        MovieDto movieDto = new MovieDto();
-        movieDto.setId(entity.getId());
-        movieDto.setGenres(genreMatch(entity.getGenres()));
-        movieDto.setOverview(entity.getOverview());
-        movieDto.setPopularity(entity.getPopularity());
-        movieDto.setTitle(entity.getTitle());
-        movieDto.setPosterPath(entity.getPosterPath());
-        movieDto.setBackdropPath(entity.getBackdropPath());
-        movieDto.setVoteAverage(entity.getVoteAverage());
-        movieDto.setVoteCount(entity.getVoteCount());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        movieDto.setReleaseDate(dateFormat.format(entity.getReleaseDate()));
-        return movieDto;
-    }
-
-    private List<Map.Entry<Long, String>> genreMatch(String entityGenres){
-        Map<Long, String> genreMap = new HashMap<>();
-        List<String> genreList = Arrays.asList(entityGenres.split(","));
-        for (String genre : genreList) {
-            long genreId = Long.parseLong(genre);
-            genreMap.put(genreId, GenreCached.getGenres().get(genreId));
-        }
-        List<Map.Entry<Long, String>> collect = genreMap.entrySet().stream().collect(Collectors.toList());
-        return collect;
-    }
-
-
+     */
 }

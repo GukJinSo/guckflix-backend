@@ -19,6 +19,7 @@ public class CreditResponse {
     public CreditResponse(Long movieId, List<CreditDto> results) {
         this.movieId = movieId;
         this.results = results;
+
     }
 }
 

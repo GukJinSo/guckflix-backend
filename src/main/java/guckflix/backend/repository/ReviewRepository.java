@@ -1,5 +1,7 @@
 package guckflix.backend.repository;
 
+import guckflix.backend.dto.request.PagingRequest;
+import guckflix.backend.dto.response.wrapper.Paging;
 import guckflix.backend.entity.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,12 +15,16 @@ public class ReviewRepository {
     @Autowired
     EntityManager em;
 
-    public List<Review> findByMovieId(Long movieId, int offset, int limit) {
-        return em.createQuery("select r from Review r where r.movieId = :id", Review.class)
+    public Paging<Review> findByMovieId(Long movieId, PagingRequest pagingRequest) {
+        List<Review> list = em.createQuery("select r from Review r where r.movieId = :id", Review.class)
                 .setParameter("id", movieId)
-                .setMaxResults(limit)
-                .setFirstResult(offset)
+                .setFirstResult(pagingRequest.getOffset())
+                .setMaxResults(pagingRequest.getLimit())
                 .getResultList();
+
+        int totalCount = em.createQuery("select r from Review r where r.movieId = :id", Long.class).getSingleResult().intValue();
+        int totalPage = pagingRequest.getTotalPage(totalCount, pagingRequest.getLimit());
+        return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
     }
 
     public Long save(Review review) {
