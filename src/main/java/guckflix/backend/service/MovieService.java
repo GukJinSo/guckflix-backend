@@ -1,9 +1,9 @@
 package guckflix.backend.service;
 
-import guckflix.backend.config.GenreCached;
 import guckflix.backend.dto.request.PagingRequest;
 import guckflix.backend.dto.response.MovieDto;
-import guckflix.backend.dto.response.wrapper.Paging;
+import guckflix.backend.dto.response.paging.Paging;
+import guckflix.backend.dto.response.paging.Slice;
 import guckflix.backend.entity.Movie;
 import guckflix.backend.exception.RuntimeMovieNotFoundException;
 import guckflix.backend.repository.MovieRepository;
@@ -13,6 +13,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -20,7 +21,6 @@ import java.util.*;
 public class MovieService {
 
     private final MovieRepository movieRepository;
-
 
     public MovieDto findById(Long id){
         try {
@@ -36,30 +36,30 @@ public class MovieService {
         String movieGenres = findMovie.getGenres();
         List<String> genreList = new ArrayList<>(Arrays.asList(movieGenres.split(",")));
         Paging<Movie> similar = movieRepository.findSimilarByGenres(findMovie.getId(), genreList, pagingRequest);
-        List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : similar.getList()) {
-            MovieDto movieDto = new MovieDto(movie);
-            dtos.add(movieDto);
-        }
-        return new Paging<MovieDto>(similar.getRequestPage(), dtos, similar.getTotalCount(),similar.getTotalPage(), similar.getSize());
+        List<MovieDto> dtos = similar.getList().stream()
+                .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
+        return Paging.convert(similar, dtos);
     }
 
     public Paging<MovieDto> findPopular(PagingRequest pagingRequest) {
         Paging<Movie> popular = movieRepository.findPopular(pagingRequest);
-        List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : popular.getList()) {
-            dtos.add(new MovieDto(movie));
-        }
-        return new Paging<MovieDto>(pagingRequest.getRequestPage(), dtos, popular.getTotalCount(),popular.getTotalPage(), popular.getSize());
+        List<MovieDto> dtos = popular.getList().stream()
+                .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
+        return Paging.convert(popular, dtos);
     }
 
     public Paging<MovieDto> findTopRated(PagingRequest pagingRequest) {
         Paging<Movie> topRated = movieRepository.findTopRated(pagingRequest);
-        List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : topRated.getList()) {
-            dtos.add(new MovieDto(movie));
-        }
-        return new Paging<MovieDto>(pagingRequest.getRequestPage(), dtos, topRated.getTotalCount(), topRated.getTotalPage(), topRated.getSize());
+        List<MovieDto> dtos = topRated.getList().stream()
+                .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
+        return Paging.convert(topRated, dtos);
+    }
+
+    public Slice<MovieDto> findByKeyword(String keyword, PagingRequest pagingRequest) {
+        Slice<Movie> search = movieRepository.findByKeyword(keyword, pagingRequest);
+        List<MovieDto> dtos = search.getList().stream()
+                .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
+        return Slice.convert(search, dtos);
     }
 
     /**

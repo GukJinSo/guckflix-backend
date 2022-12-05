@@ -26,13 +26,4 @@ public class PagingRequest {
         this.limit = limit;
     }
 
-    @JsonIgnore
-    public int getTotalPage(int totalCount, int limit){
-        int totalPage = totalCount % limit;
-        if(totalPage % limit > 0) {
-            totalPage = totalPage + 1;
-        }
-        return totalPage;
-    }
-
 }

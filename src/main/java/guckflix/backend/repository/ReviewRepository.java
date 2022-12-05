@@ -1,7 +1,7 @@
 package guckflix.backend.repository;
 
 import guckflix.backend.dto.request.PagingRequest;
-import guckflix.backend.dto.response.wrapper.Paging;
+import guckflix.backend.dto.response.paging.Paging;
 import guckflix.backend.entity.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -23,7 +23,7 @@ public class ReviewRepository {
                 .getResultList();
 
         int totalCount = em.createQuery("select r from Review r where r.movieId = :id", Long.class).getSingleResult().intValue();
-        int totalPage = pagingRequest.getTotalPage(totalCount, pagingRequest.getLimit());
+        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
         return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
     }
 
@@ -37,5 +37,13 @@ public class ReviewRepository {
                 .setParameter("id", id)
                 .getSingleResult();
         return findReview;
+    }
+
+    public int getTotalPage(int totalCount, int limit){
+        int totalPage = totalCount / limit;
+        if(totalCount % limit > 0) {
+            totalPage = totalPage + 1;
+        }
+        return totalPage;
     }
 }

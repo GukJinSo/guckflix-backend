@@ -3,10 +3,10 @@ package guckflix.backend.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import guckflix.backend.dto.request.PagingRequest;
-import guckflix.backend.dto.response.wrapper.Paging;
+import guckflix.backend.dto.response.paging.Paging;
+import guckflix.backend.dto.response.paging.Slice;
 import guckflix.backend.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -32,16 +32,8 @@ public class MovieRepository {
         em.persist(entity);
     }
 
-    /**
-     * @param id
-     * @return
-     * @throws EmptyResultDataAccessException
-     */
-    public Movie findById(Long id) throws EmptyResultDataAccessException {
-        Movie movie = em.createQuery("select m from Movie m where m.id = :id", Movie.class)
-                .setParameter("id", id)
-                .getSingleResult();
-        return movie;
+    public Movie findById(Long id) {
+        return em.find(Movie.class, id);
     }
 
     public Paging<Movie> findPopular(PagingRequest pagingRequest) {
@@ -50,7 +42,7 @@ public class MovieRepository {
                 .setMaxResults(pagingRequest.getLimit())
                 .getResultList();
         int totalCount = selectCountAll().intValue();
-        int totalPage = pagingRequest.getTotalPage(totalCount, pagingRequest.getLimit());
+        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
         return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
     }
 
@@ -68,12 +60,27 @@ public class MovieRepository {
                 .setMaxResults(pagingRequest.getLimit())
                 .getResultList();
         int totalCount = selectCountAll().intValue();
-        int totalPage = pagingRequest.getTotalPage(totalCount, pagingRequest.getLimit());
+        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
         return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
     }
 
     private Long selectCountAll(){
         return em.createQuery("select count(m) from Movie m", Long.class).getSingleResult();
+    }
+
+    public Slice<Movie> findByKeyword(String keyword, PagingRequest pagingRequest) {
+        List<Movie> list = em.createQuery("select m from Movie m where m.title like :keyword", Movie.class)
+                .setParameter("keyword", "%"+keyword+"%")
+                .setFirstResult(pagingRequest.getOffset())
+                .setMaxResults(pagingRequest.getLimit()+1)
+                .getResultList();
+
+        /**
+         * Slice는 limit보다 한 개 더 가져와서 다음 페이지가 있는지 확인함
+         */
+        boolean hasNext = list.size() > pagingRequest.getLimit() ? true : false;
+        if (hasNext == true) list.remove(list.size()-1);
+        return new Slice<>(hasNext, pagingRequest.getRequestPage(), list, pagingRequest.getLimit());
     }
 
     public Paging<Movie> findSimilarByGenres(Long id, List<String> genres, PagingRequest pagingRequest) {
@@ -93,14 +100,17 @@ public class MovieRepository {
 
 
         int totalCount = selectCountAll().intValue();
-        int totalPage = pagingRequest.getTotalPage(totalCount, pagingRequest.getLimit());
+        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
         return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
 
-//        List<BooleanExpression> list = new ArrayList<>();
-//        for (int i = 0; i < genres.size(); i++) {
-//            BooleanExpression be = movie.genres.contains(genres.get(i));
-//        }
-//        BooleanExpression[] bes = list.toArray(new BooleanExpression[list.size()]);
-
     }
+
+    public int getTotalPage(int totalCount, int limit){
+        int totalPage = totalCount / limit;
+        if(totalCount % limit > 0) {
+            totalPage = totalPage + 1;
+        }
+        return totalPage;
+    }
+
 }

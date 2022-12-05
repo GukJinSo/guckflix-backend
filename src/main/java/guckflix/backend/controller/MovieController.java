@@ -6,8 +6,9 @@ import guckflix.backend.dto.response.CreditDto;
 import guckflix.backend.dto.response.MovieDto;
 import guckflix.backend.dto.response.ReviewDto;
 import guckflix.backend.dto.response.VideoDto;
+import guckflix.backend.dto.response.paging.Slice;
 import guckflix.backend.dto.response.wrapper.CreditResponse;
-import guckflix.backend.dto.response.wrapper.Paging;
+import guckflix.backend.dto.response.paging.Paging;
 import guckflix.backend.dto.response.wrapper.VideoResponse;
 import guckflix.backend.service.CreditService;
 import guckflix.backend.service.MovieService;
@@ -115,14 +116,14 @@ public class MovieController {
 
     /**
      * 영화 검색
-
+     */
     @GetMapping("/movies/search")
-    public ResponseEntity<Paging> search(@RequestParam String keyword) {
-        movieService.findByKeyword(keyword);
-        return ResponseEntity.ok().body(new Paging(0, null));
+    public ResponseEntity<Slice> search(@RequestParam String keyword, PagingRequest pagingRequest) {
+        Slice<MovieDto> movies = movieService.findByKeyword(keyword, pagingRequest);
+        return ResponseEntity.ok().body(movies);
     }
 
-    */
+
 
 
 

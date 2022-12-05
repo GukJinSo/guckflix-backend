@@ -1,7 +1,7 @@
 package guckflix.backend.exception;
 
 
-import guckflix.backend.dto.response.wrapper.ErrorResponse;
+import guckflix.backend.dto.response.ErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(value = RuntimeMovieNotFoundException.class)
-    public ResponseEntity<ErrorResponse> movieNotFound(RuntimeMovieNotFoundException e) {
+    public ResponseEntity<ErrorDto> movieNotFound(RuntimeMovieNotFoundException e) {
         log.warn("Exception", e);
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        ErrorDto errorResponse = new ErrorDto(e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 }

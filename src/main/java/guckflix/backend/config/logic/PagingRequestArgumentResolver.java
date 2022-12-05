@@ -1,15 +1,13 @@
-package guckflix.backend.config;
+package guckflix.backend.config.logic;
 
 import guckflix.backend.dto.request.PagingRequest;
-import guckflix.backend.dto.response.wrapper.Paging;
 import org.springframework.core.MethodParameter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-public class PagingArgumentResolver implements HandlerMethodArgumentResolver {
+public class PagingRequestArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
