@@ -2,8 +2,7 @@ package guckflix.backend.controller;
 
 
 import guckflix.backend.dto.MemberDto;
-import guckflix.backend.entity.Member;
-import guckflix.backend.security.PrincipalDetails;
+import guckflix.backend.security.authen.PrincipalDetails;
 import guckflix.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

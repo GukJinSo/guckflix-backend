@@ -1,4 +1,4 @@
-package guckflix.backend.security;
+package guckflix.backend.security.authen;
 
 import guckflix.backend.entity.Member;
 import lombok.Data;

@@ -20,8 +20,10 @@ public class MemberService {
     @Transactional
     public String save(MemberDto dto){
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-        Member member = Member.builder().username(dto.getUsername())
+        Member member = Member.builder()
+                .username(dto.getUsername())
                 .password(dto.getPassword())
+                .email(dto.getEmail())
                 .role(MemberRole.USER).build();
         memberRepository.save(member);
         return member.getUsername();

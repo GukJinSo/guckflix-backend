@@ -7,14 +7,29 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Locale;
 
 @Repository
-public class VideoRepository {
+public class VideoRepository implements CommonRepository<Video, String> {
 
     @Autowired EntityManager em;
 
-    public List<Video> findByMovieId(Long movieId, String locale){
+    @Override
+    public String save(Video entity){
+        em.persist(entity);
+        return entity.getId();
+    }
+
+    @Override
+    public Video findById(Long id) {
+        return em.find(Video.class, id);
+    }
+
+    @Override
+    public void delete(Video entity){
+        em.remove(entity);
+    }
+
+    public List<Video> findAllByMovieId(Long movieId, String locale){
         return em.createQuery("select v from Video v where v.movie.id = :id and v.iso639 = :locale", Video.class)
                 .setParameter("id", movieId)
                 .setParameter("locale", ISO639.valueOf(locale))

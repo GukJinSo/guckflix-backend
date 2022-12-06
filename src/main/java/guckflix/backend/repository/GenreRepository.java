@@ -8,10 +8,26 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
-public class GenreRepository {
+public class GenreRepository implements CommonRepository<Genre, Long> {
 
     @Autowired
     EntityManager em;
+
+    @Override
+    public Long save(Genre entity){
+        em.persist(entity);
+        return entity.getId();
+    }
+
+    @Override
+    public Genre findById(Long id) {
+        return em.find(Genre.class, id);
+    }
+
+    @Override
+    public void delete(Genre entity){
+        em.remove(entity);
+    }
 
     public List<Genre> findAll(){
         return em.createQuery("select g from Genre g", Genre.class).getResultList();

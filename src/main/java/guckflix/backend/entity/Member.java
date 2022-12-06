@@ -28,4 +28,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    private String provider;
+
+    @Column(name= " provider_id")
+    private String providerId;
+
 }

@@ -10,10 +10,26 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 @Repository
-public class ReviewRepository {
+public class ReviewRepository implements CommonRepository<Review, Long> {
 
     @Autowired
     EntityManager em;
+
+    @Override
+    public Long save(Review entity){
+        em.persist(entity);
+        return entity.getId();
+    }
+
+    @Override
+    public Review findById(Long id) {
+        return em.find(Review.class, id);
+    }
+
+    @Override
+    public void delete(Review entity){
+        em.remove(entity);
+    }
 
     public Paging<Review> findByMovieId(Long movieId, PagingRequest pagingRequest) {
         List<Review> list = em.createQuery("select r from Review r where r.movieId = :id", Review.class)
@@ -27,18 +43,6 @@ public class ReviewRepository {
                 .getSingleResult().intValue();
         int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
         return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
-    }
-
-    public Long save(Review review) {
-        em.persist(review);
-        return review.getId();
-    }
-
-    public Review findById(Long id) {
-        Review findReview = em.createQuery("select r from Review r where r.id = :id", Review.class)
-                .setParameter("id", id)
-                .getSingleResult();
-        return findReview;
     }
 
     public int getTotalPage(int totalCount, int limit){

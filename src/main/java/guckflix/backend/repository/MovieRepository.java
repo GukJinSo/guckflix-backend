@@ -17,7 +17,7 @@ import static guckflix.backend.entity.QMovie.movie;
 
 
 @Repository
-public class MovieRepository {
+public class MovieRepository implements CommonRepository<Movie, Long> {
 
     @Autowired EntityManager em;
 
@@ -28,12 +28,20 @@ public class MovieRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public void save(Movie entity){
+    @Override
+    public Long save(Movie entity){
         em.persist(entity);
+        return entity.getId();
     }
 
+    @Override
     public Movie findById(Long id) {
         return em.find(Movie.class, id);
+    }
+
+    @Override
+    public void delete(Movie entity){
+        em.remove(entity);
     }
 
     public Paging<Movie> findPopular(PagingRequest pagingRequest) {

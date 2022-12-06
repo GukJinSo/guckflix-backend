@@ -1,4 +1,4 @@
-package guckflix.backend.security;
+package guckflix.backend.security.authen;
 
 import guckflix.backend.entity.Member;
 import guckflix.backend.repository.MemberRepository;
@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 시큐리티 설정에서 loginProcessingUrl이 실행되는 위치
@@ -22,12 +24,11 @@ public class PrincipalDetailsService implements UserDetailsService {
      * 시큐리티 세션에 들어갈 수 있는건 Authentication. Authentication 안에 UserDetails 타입이 들어감
      * 시큐리티 세션(내부 Authentication(내부 UserDetails))
      */
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member memberEntity = memberRepository.findByUsername(username);
-        if(memberEntity != null){
-            return new PrincipalDetails(memberEntity);
+        List<Member> members = memberRepository.findByUsername(username);
+        if(members.size() != 0){
+            return new PrincipalDetails(members.get(0));
         }
         return null;
     }

@@ -19,7 +19,7 @@ public class VideoService {
 
     public List<VideoDto> findById(Long movieId, String locale){
         List<VideoDto> dtos = new ArrayList<>();
-        List<Video> videos = videoRepository.findByMovieId(movieId, locale);
+        List<Video> videos = videoRepository.findAllByMovieId(movieId, locale);
         for (Video video : videos) {
             dtos.add(VideoEntityToDto(video));
         }
