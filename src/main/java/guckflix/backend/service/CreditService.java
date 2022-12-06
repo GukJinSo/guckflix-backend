@@ -1,6 +1,6 @@
 package guckflix.backend.service;
 
-import guckflix.backend.dto.response.CreditDto;
+import guckflix.backend.dto.CreditDto;
 import guckflix.backend.entity.Credit;
 import guckflix.backend.repository.CreditRepository;
 import lombok.RequiredArgsConstructor;

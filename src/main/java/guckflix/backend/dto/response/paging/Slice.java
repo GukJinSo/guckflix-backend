@@ -29,9 +29,9 @@ public class Slice<T> {
     /**
      * 서비스 단에서 Slice<Entity> -> Slice<Dto>로 안의 제네릭 내용물만 갈아끼우는 경우 사용
      */
-    public static <T, C> Slice<C> convert(Slice<T> original, List<C> list){
+    public <C> Slice<C> convert(List<C> list){
         return new Slice<>(
-                original.getHasNext(), original.getRequestPage(), list, original.getSize()
+                getHasNext(), getRequestPage(), list, getSize()
         );
     }
 

@@ -1,7 +1,7 @@
 package guckflix.backend.dto.response.wrapper;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guckflix.backend.dto.response.VideoDto;
+import guckflix.backend.dto.VideoDto;
 import lombok.Getter;
 import lombok.Setter;
 

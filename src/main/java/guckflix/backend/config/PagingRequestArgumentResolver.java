@@ -1,4 +1,4 @@
-package guckflix.backend.config.logic;
+package guckflix.backend.config;
 
 import guckflix.backend.dto.request.PagingRequest;
 import org.springframework.core.MethodParameter;
@@ -25,8 +25,8 @@ public class PagingRequestArgumentResolver implements HandlerMethodArgumentResol
          * limit : 페이지 사이즈
          * offset : (페이지 사이즈 X page) 번째 데이터부터 출력
          */
-        int page = (paramPage == null || paramPage.equals("")) ? 0 : Integer.parseInt(paramPage); // defaultVaule
-        int limit = (paramLimit == null || paramLimit.equals("")) ? 20 : Integer.parseInt(paramLimit); // defaultVaule
+        int page = (paramPage == null || paramPage.equals("")) ? 0 : Integer.parseInt(paramPage); // defaultVaule 0
+        int limit = (paramLimit == null || paramLimit.equals("")) ? 20 : Integer.parseInt(paramLimit); // defaultVaule 20
         int requestPage = (page == 0) ? 1 : page;
         int offset = page - 1 >= 0 ? (page - 1 ) * limit : 0;
 

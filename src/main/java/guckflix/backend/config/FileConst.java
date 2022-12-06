@@ -1,4 +1,4 @@
-package guckflix.backend.config.logic;
+package guckflix.backend.config;
 
 public abstract class FileConst {
     public static final String IMAGE_DIRECTORY_ROOT = "D:/uploadFiles";

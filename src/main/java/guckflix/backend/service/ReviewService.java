@@ -1,7 +1,7 @@
 package guckflix.backend.service;
 
 import guckflix.backend.dto.request.PagingRequest;
-import guckflix.backend.dto.response.ReviewDto;
+import guckflix.backend.dto.ReviewDto;
 import guckflix.backend.dto.response.paging.Paging;
 import guckflix.backend.entity.Review;
 import guckflix.backend.repository.ReviewRepository;
@@ -26,7 +26,7 @@ public class ReviewService {
         for (Review findReview : reviews.getList()) {
             dtos.add(new ReviewDto(findReview));
         }
-        return Paging.convert(reviews, dtos);
+        return reviews.convert(dtos);
     }
 
     public ReviewDto findById(Long reviewId){

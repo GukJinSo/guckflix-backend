@@ -22,7 +22,9 @@ public class ReviewRepository {
                 .setMaxResults(pagingRequest.getLimit())
                 .getResultList();
 
-        int totalCount = em.createQuery("select r from Review r where r.movieId = :id", Long.class).getSingleResult().intValue();
+        int totalCount = em.createQuery("select count(r) from Review r where r.movieId = :id", Long.class)
+                .setParameter("id", movieId)
+                .getSingleResult().intValue();
         int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
         return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
     }

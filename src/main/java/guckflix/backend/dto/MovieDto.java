@@ -1,4 +1,4 @@
-package guckflix.backend.dto.response;
+package guckflix.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

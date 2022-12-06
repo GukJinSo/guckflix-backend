@@ -1,7 +1,7 @@
 package guckflix.backend.dto.response.wrapper;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guckflix.backend.dto.response.CreditDto;
+import guckflix.backend.dto.CreditDto;
 import lombok.Getter;
 import lombok.Setter;
 

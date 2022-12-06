@@ -2,10 +2,10 @@ package guckflix.backend.controller;
 
 import guckflix.backend.dto.request.PagingRequest;
 import guckflix.backend.dto.request.ReviewRequest;
-import guckflix.backend.dto.response.CreditDto;
-import guckflix.backend.dto.response.MovieDto;
-import guckflix.backend.dto.response.ReviewDto;
-import guckflix.backend.dto.response.VideoDto;
+import guckflix.backend.dto.CreditDto;
+import guckflix.backend.dto.MovieDto;
+import guckflix.backend.dto.ReviewDto;
+import guckflix.backend.dto.VideoDto;
 import guckflix.backend.dto.response.paging.Slice;
 import guckflix.backend.dto.response.wrapper.CreditResponse;
 import guckflix.backend.dto.response.paging.Paging;
@@ -82,6 +82,7 @@ public class MovieController {
 
     /**
      * 영화 비디오(트레일러 등) 리스트
+     * accept-language : ko or en
      */
     @GetMapping("/movies/{movieId}/videos")
     public ResponseEntity<VideoResponse> videos(@PathVariable Long movieId,

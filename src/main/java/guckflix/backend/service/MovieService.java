@@ -1,7 +1,7 @@
 package guckflix.backend.service;
 
 import guckflix.backend.dto.request.PagingRequest;
-import guckflix.backend.dto.response.MovieDto;
+import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.response.paging.Paging;
 import guckflix.backend.dto.response.paging.Slice;
 import guckflix.backend.entity.Movie;
@@ -27,7 +27,7 @@ public class MovieService {
             MovieDto movieDto = new MovieDto((movieRepository.findById(id)));
             return movieDto;
         } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeMovieNotFoundException("MOVIE NOT FOUND" , e);
+            throw new RuntimeMovieNotFoundException("No movie of given id", e);
         }
     }
 
@@ -38,28 +38,28 @@ public class MovieService {
         Paging<Movie> similar = movieRepository.findSimilarByGenres(findMovie.getId(), genreList, pagingRequest);
         List<MovieDto> dtos = similar.getList().stream()
                 .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
-        return Paging.convert(similar, dtos);
+        return similar.convert(dtos);
     }
 
     public Paging<MovieDto> findPopular(PagingRequest pagingRequest) {
         Paging<Movie> popular = movieRepository.findPopular(pagingRequest);
         List<MovieDto> dtos = popular.getList().stream()
                 .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
-        return Paging.convert(popular, dtos);
+        return popular.convert(dtos);
     }
 
     public Paging<MovieDto> findTopRated(PagingRequest pagingRequest) {
         Paging<Movie> topRated = movieRepository.findTopRated(pagingRequest);
         List<MovieDto> dtos = topRated.getList().stream()
                 .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
-        return Paging.convert(topRated, dtos);
+        return topRated.convert(dtos);
     }
 
     public Slice<MovieDto> findByKeyword(String keyword, PagingRequest pagingRequest) {
         Slice<Movie> search = movieRepository.findByKeyword(keyword, pagingRequest);
         List<MovieDto> dtos = search.getList().stream()
                 .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
-        return Slice.convert(search, dtos);
+        return search.convert(dtos);
     }
 
     /**

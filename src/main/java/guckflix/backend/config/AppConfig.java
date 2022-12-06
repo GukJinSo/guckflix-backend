@@ -1,4 +1,4 @@
-package guckflix.backend.config.logic;
+package guckflix.backend.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

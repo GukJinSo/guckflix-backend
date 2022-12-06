@@ -1,4 +1,4 @@
-package guckflix.backend.dto.response;
+package guckflix.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.entity.enums.ISO3166;

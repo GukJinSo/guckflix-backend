@@ -34,9 +34,9 @@ public class Paging<T> {
     /**
      * 서비스 단에서 Paging<Entity> -> Paging<Dto>로 안의 제네릭 내용물만 갈아끼우는 경우 사용
      */
-    public static <T, C> Paging<C> convert(Paging<T> original, List<C> list){
+    public <C> Paging<C> convert(List<C> list){
         return new Paging<C>(
-                original.getRequestPage(), list, original.getTotalCount(), original.getTotalPage(), original.getSize()
+                getRequestPage(), list, getTotalCount(), getTotalPage(), getSize()
         );
     }
 
