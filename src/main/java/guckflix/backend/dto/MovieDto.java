@@ -48,7 +48,7 @@ public class MovieDto {
     @JsonIgnore
     public MovieDto(Movie entity){
         this.setId(entity.getId());
-        this.setGenres(genreMatch(entity.getGenres()));
+        this.setGenres(genreToListEntry(entity.getGenres()));
         this.setOverview(entity.getOverview());
         this.setPopularity(entity.getPopularity());
         this.setTitle(entity.getTitle());
@@ -61,7 +61,12 @@ public class MovieDto {
     }
 
     @JsonIgnore
-    private List<Map.Entry<Long, String>> genreMatch(String entityGenres){
+    public List<Map.Entry<Long, String>> genreToListEntry(String entityGenres){
+
+        if(entityGenres == null || entityGenres.equals("")){
+            return null;
+        }
+
         Map<Long, String> genreMap = new HashMap<>();
         List<String> genreList = Arrays.asList(entityGenres.split(","));
         for (String genre : genreList) {
@@ -72,5 +77,16 @@ public class MovieDto {
         return collect;
     }
 
+    @JsonIgnore
+    public String genreToString(List<Map.Entry<Long, String>> genres){
+
+        if(genres == null || genres.size() == 0) {
+            return null;
+        }
+
+        return genres.stream().map((entry) -> Integer.toString(entry.getKey().intValue()))
+                .collect(Collectors.toList())
+                .stream().collect(Collectors.joining(","));
+    }
 
 }

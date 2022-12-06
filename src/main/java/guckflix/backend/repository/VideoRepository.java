@@ -15,7 +15,11 @@ public class VideoRepository implements CommonRepository<Video, String> {
 
     @Override
     public String save(Video entity){
-        em.persist(entity);
+        if(entity.getId() == null){
+            em.persist(entity);
+        } else {
+            em.merge(entity);
+        }
         return entity.getId();
     }
 

@@ -16,7 +16,11 @@ public class CreditRepository implements CommonRepository<Credit, Long> {
 
     @Override
     public Long save(Credit entity){
-        em.persist(entity);
+        if(entity.getId() == null){
+            em.persist(entity);
+        } else {
+            em.merge(entity);
+        }
         return entity.getId();
     }
 

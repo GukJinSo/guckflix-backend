@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Review extends TimeDateBaseEntity {
 
     @Column(name = "review_id")
-    @Id @GeneratedValue private Long id;
+    @Id private Long id;
 
     @Column(name = "movie_id")
     private Long movieId;

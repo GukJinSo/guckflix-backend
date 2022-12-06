@@ -1,7 +1,6 @@
 package guckflix.backend.controller;
 
 import guckflix.backend.dto.request.PagingRequest;
-import guckflix.backend.dto.request.ReviewRequest;
 import guckflix.backend.dto.CreditDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.ReviewDto;
@@ -10,6 +9,7 @@ import guckflix.backend.dto.response.paging.Slice;
 import guckflix.backend.dto.response.wrapper.CreditResponse;
 import guckflix.backend.dto.response.paging.Paging;
 import guckflix.backend.dto.response.wrapper.VideoResponse;
+import guckflix.backend.security.authen.PrincipalDetails;
 import guckflix.backend.service.CreditService;
 import guckflix.backend.service.MovieService;
 import guckflix.backend.service.ReviewService;
@@ -17,6 +17,7 @@ import guckflix.backend.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -66,7 +67,7 @@ public class MovieController {
      */
     @GetMapping("/movies/{movieId}/similar")
     public ResponseEntity<Paging> similar(@PathVariable Long movieId,
-                                                 PagingRequest pagingRequest) {
+                                          PagingRequest pagingRequest) {
         Paging<MovieDto> similar = movieService.findSimilar(movieId, pagingRequest);
         return ResponseEntity.ok(similar);
     }
@@ -105,15 +106,23 @@ public class MovieController {
      */
     @PostMapping("/movies/{movieId}/reviews")
     public ResponseEntity<ReviewDto> reviewsPost(@PathVariable Long movieId,
-    @RequestBody ReviewRequest form) {
-        ReviewDto dto = new ReviewDto();
+                                                 @AuthenticationPrincipal PrincipalDetails user,
+                                                 @ModelAttribute ReviewDto dto) {
         dto.setMovieId(movieId);
-        dto.setContent(form.getContent());
-        dto.setVoteRating(form.getVoteRating());
+        dto.setUserId(user.getMember().getId());
         Long findId = reviewService.save(dto);
         return ResponseEntity.ok().body(reviewService.findById(findId));
     }
 
+    @DeleteMapping("/movies/{movieId}/reviews")
+    public ResponseEntity<String> reviewsDelete(@PathVariable Long movieId,
+                                                @AuthenticationPrincipal PrincipalDetails user,
+                                                @ModelAttribute ReviewDto dto) {
+        dto.setMovieId(movieId);
+        dto.setUserId(user.getMember().getId());
+        reviewService.delete(dto);
+        return ResponseEntity.ok().body("DELETED");
+    }
 
     /**
      * 영화 검색

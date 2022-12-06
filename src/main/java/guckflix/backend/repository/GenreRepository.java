@@ -15,7 +15,11 @@ public class GenreRepository implements CommonRepository<Genre, Long> {
 
     @Override
     public Long save(Genre entity){
-        em.persist(entity);
+        if(entity.getId() == null){
+            em.persist(entity);
+        } else {
+            em.merge(entity);
+        }
         return entity.getId();
     }
 

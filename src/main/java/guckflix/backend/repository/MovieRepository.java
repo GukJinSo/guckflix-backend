@@ -30,7 +30,13 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
 
     @Override
     public Long save(Movie entity){
-        em.persist(entity);
+        if(entity.getId() == null){
+            em.persist(entity);
+        } else {
+            em.merge(entity);
+        }
+        em.flush();
+        em.clear();
         return entity.getId();
     }
 

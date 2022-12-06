@@ -1,6 +1,5 @@
 package guckflix.backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -43,4 +42,13 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     public List<Video> videos = new ArrayList<>();
 
+    public void updateVoteAdd(float voteRating) {
+        this.voteAverage = ((this.voteAverage * voteCount) + voteRating) / (voteCount + 1);
+        this.voteCount += 1;
+    }
+
+    public void updateVoteDelete(float voteRating) {
+        this.voteAverage = ((this.voteAverage * voteCount) - voteRating) / (voteCount - 1);
+        this.voteCount -= 1;
+    }
 }

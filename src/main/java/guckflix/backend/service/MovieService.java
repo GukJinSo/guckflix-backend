@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +26,7 @@ public class MovieService {
 
     public MovieDto findById(Long id){
         try {
-            MovieDto movieDto = new MovieDto((movieRepository.findById(id)));
+            MovieDto movieDto = new MovieDto(movieRepository.findById(id));
             return movieDto;
         } catch (EmptyResultDataAccessException e) {
             throw new RuntimeMovieNotFoundException("No movie of given id", e);
@@ -60,6 +62,31 @@ public class MovieService {
         List<MovieDto> dtos = search.getList().stream()
                 .map((entity) -> new MovieDto(entity)).collect(Collectors.toList());
         return search.convert(dtos);
+    }
+
+    public void save(MovieDto movieDto) {
+        try {
+            Movie movie = dtoToEntity(movieDto);
+            movieRepository.save(movie);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Movie dtoToEntity(MovieDto dto) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = formatter.parse(dto.getReleaseDate());
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        return Movie.builder()
+                .id(dto.getId())
+                .backdropPath(dto.getBackdropPath())
+                .posterPath(dto.getPosterPath())
+                .overview(dto.getOverview())
+                .genres(dto.genreToString(dto.getGenres()))
+                .voteAverage(dto.getVoteAverage())
+                .voteCount(dto.getVoteCount())
+                .releaseDate(sqlDate)
+                .build();
     }
 
     /**
