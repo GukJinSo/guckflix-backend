@@ -17,11 +17,7 @@ public class ReviewRepository implements CommonRepository<Review, Long> {
 
     @Override
     public Long save(Review entity){
-        if(entity.getId() == null){
-            em.persist(entity);
-        } else {
-            em.merge(entity);
-        }
+        em.persist(entity);
         return entity.getId();
     }
 
@@ -31,7 +27,7 @@ public class ReviewRepository implements CommonRepository<Review, Long> {
     }
 
     @Override
-    public void delete(Review entity){
+    public void remove(Review entity){
         em.remove(entity);
     }
 

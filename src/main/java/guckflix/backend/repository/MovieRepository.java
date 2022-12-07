@@ -30,13 +30,8 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
 
     @Override
     public Long save(Movie entity){
-        if(entity.getId() == null){
-            em.persist(entity);
-        } else {
-            em.merge(entity);
-        }
+        em.persist(entity);
         em.flush();
-        em.clear();
         return entity.getId();
     }
 
@@ -46,7 +41,7 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
     }
 
     @Override
-    public void delete(Movie entity){
+    public void remove(Movie entity){
         em.remove(entity);
     }
 
@@ -67,9 +62,9 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
     public Paging<Movie> findTopRated(PagingRequest pagingRequest) {
         List<Movie> list = em.createQuery("select m from Movie m" +
                         " order by ((m.voteAverage * :voteAverage) + (m.voteCount * :voteCount) + (popularity * :popularity )) desc", Movie.class)
-                .setParameter("voteAverage", VOTE_AVERAGE)
-                .setParameter("voteCount", VOTE_COUNT)
-                .setParameter("popularity", POPULARITY)
+                .setParameter("voteAverage", VOTE_AVERAGE_WEIGHT)
+                .setParameter("voteCount", VOTE_COUNT_WEIGHT)
+                .setParameter("popularity", POPULARITY_WEIGHT)
                 .setFirstResult(pagingRequest.getOffset()) // offset
                 .setMaxResults(pagingRequest.getLimit())
                 .getResultList();

@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class Movie {
 
-    @Id private Long id;
+    @Id @GeneratedValue private Long id;
 
     private String title;
 

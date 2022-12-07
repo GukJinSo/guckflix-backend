@@ -26,8 +26,11 @@ public class MemberController {
         return ResponseEntity.ok(savedUsername);
     }
 
+    /**
+     * 테스트
+     */
     @GetMapping("/members")
     public String members(@AuthenticationPrincipal PrincipalDetails member) {
-        return null;
+        return member.getMember();
     }
 }

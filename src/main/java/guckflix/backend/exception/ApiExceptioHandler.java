@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j
-public class CustomExceptionHandler {
+public class ApiExceptioHandler {
 
     @ExceptionHandler(value = RuntimeMovieNotFoundException.class)
     public ResponseEntity<ErrorDto> movieNotFound(RuntimeMovieNotFoundException e) {
@@ -18,4 +18,6 @@ public class CustomExceptionHandler {
         ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
+
+
 }

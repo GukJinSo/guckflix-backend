@@ -15,11 +15,7 @@ public class GenreRepository implements CommonRepository<Genre, Long> {
 
     @Override
     public Long save(Genre entity){
-        if(entity.getId() == null){
-            em.persist(entity);
-        } else {
-            em.merge(entity);
-        }
+        em.persist(entity);
         return entity.getId();
     }
 
@@ -29,7 +25,7 @@ public class GenreRepository implements CommonRepository<Genre, Long> {
     }
 
     @Override
-    public void delete(Genre entity){
+    public void remove(Genre entity){
         em.remove(entity);
     }
 

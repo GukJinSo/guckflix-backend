@@ -17,9 +17,7 @@ import java.io.PrintWriter;
 
 
 /**
- * 성공 시, 401 에러 시 핸들러
- * 성공 : AuthenticationSuccessHandler 필요
- * 401 메세지 전달 : AuthenticationEntryPoint 필요
+ * 로그인 성공 시 메세지를 보낼 핸들러
  {
  "status": "OK",
  "message": "Login OK",

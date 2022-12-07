@@ -10,10 +10,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * 왜 PrincipalDetails을 두는가? ->
+ * PrincipalDetails로 UserDetails, OAuth2User 구현 객체를 만들지 않는 경우
+ * 컨트롤러에서 @Authentication이 유저가 OAuth2User인지, UserDetails인지 검사하고 형변환을 계속 해야 함
+ */
 @Data
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
+    // 실제 회원 정보
     private Member member;
+
+    // 구글에서 제공하는 회원 정보
     private Map<String, Object> attributes;
 
     // 일반 경로로 가입한 회원

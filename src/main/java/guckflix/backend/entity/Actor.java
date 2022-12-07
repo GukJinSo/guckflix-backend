@@ -14,7 +14,7 @@ import java.util.List;
 public class Actor {
 
     @Column(name = "actor_id")
-    @Id private Long id;
+    @Id @GeneratedValue private Long id;
 
     private String name;
 

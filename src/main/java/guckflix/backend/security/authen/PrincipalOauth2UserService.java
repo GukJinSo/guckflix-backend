@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * OAuth2 (google, naver) 가입용
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j

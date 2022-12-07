@@ -17,7 +17,7 @@ public class AppConfig implements WebMvcConfigurer {
 
     /**
      * 영화 비디오 로케일 설정
-     * 기본값을 Locale.US로 설정한 것은 서버 실행 환경(KR)이 아니라 US로 동작하도록 만든 것
+     * 기본값을 Locale.US로 설정한 것은 서버 실행 환경(KR)이 아니라 US로 동작하도록 만듦
      * postman Accept-language ko / en으로 요청
      */
     @Bean
@@ -28,7 +28,7 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     /**
-     * ETag 설정
+     * 이미지 캐시를 위한 ETag 설정
      */
     @Bean
     public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
@@ -39,6 +39,9 @@ public class AppConfig implements WebMvcConfigurer {
         return filterRegistrationBean;
     }
 
+    /**
+     * Spring Data Jpa의 Pageable 사용하는 것 대신 커스텀 페이징 객체 Resolver
+     */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new PagingRequestArgumentResolver());

@@ -7,6 +7,9 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+/**
+ * Spring Data Jpa의 Pageable 사용하는 것 대신 커스텀 페이징 객체 Resolver
+ */
 public class PagingRequestArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
@@ -21,7 +24,8 @@ public class PagingRequestArgumentResolver implements HandlerMethodArgumentResol
 
         /**
          * page : 사용자가 실제 db의 몇 페이지를 요청했는가? (0부터 시작)
-         * requestPage : 뷰 단에서 자신이 몇 페이지를 요청했는지 확인할 변수. 0페이지 요청 시 1페이지, 1페이지 요청하더라도 1페이지라고 응답되어야 함
+         * requestPage : 뷰 단에서 자신이 몇 페이지를 요청했는지 확인할 변수 (0 또는 1부터 시작)
+         * 그러나 0페이지 요청 시 1페이지, 1페이지 요청하더라도 1페이지라고 응답되어야 함
          * limit : 페이지 사이즈
          * offset : (페이지 사이즈 X page) 번째 데이터부터 출력
          */

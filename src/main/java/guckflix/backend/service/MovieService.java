@@ -64,39 +64,26 @@ public class MovieService {
         return search.convert(dtos);
     }
 
-    public void save(MovieDto movieDto) {
+    public Long save(MovieDto movieDto) {
         try {
             Movie movie = dtoToEntity(movieDto);
-            movieRepository.save(movie);
+            return movieRepository.save(movie);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
     private Movie dtoToEntity(MovieDto dto) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = formatter.parse(dto.getReleaseDate());
-        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
         return Movie.builder()
-                .id(dto.getId())
                 .backdropPath(dto.getBackdropPath())
                 .posterPath(dto.getPosterPath())
                 .overview(dto.getOverview())
                 .genres(dto.genreToString(dto.getGenres()))
                 .voteAverage(dto.getVoteAverage())
                 .voteCount(dto.getVoteCount())
-                .releaseDate(sqlDate)
+                .releaseDate(dto.stringDateToSqlDate(dto.getReleaseDate()))
                 .build();
     }
 
-    /**
-    public List<MovieDto> findByKeyword(String keyword) {
-        List<Movie> list = movieRepository.findByKeyword(keyword);
-        List<MovieDto> dtos = new ArrayList<>();
-        for (Movie movie : list) {
-            dtos.add(new MovieDto(movie));
-        }
-        return dtos;
-    }
-     */
 }

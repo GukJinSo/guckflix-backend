@@ -32,25 +32,19 @@ class ReviewServiceTest {
     public void review_add() throws Exception{
         MovieDto movieDto = new MovieDto();
         movieDto.setTitle("test");
-        movieDto.setId(1000000L);
-
         movieDto.setVoteAverage(4f);
         movieDto.setVoteCount(5);
         movieDto.setReleaseDate("2022-11-23");
-        movieService.save(movieDto);
-
-        MovieDto movie = movieService.findById(movieDto.getId());
-        System.out.println("movie = " + movie.getId());
+        Long savedMovieId = movieService.save(movieDto);
 
         ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewId(1000L);
-        reviewDto.setMovieId(1000000L);
+        reviewDto.setMovieId(savedMovieId);
         reviewDto.setUserId(115L);
         reviewDto.setVoteRating(1);
-        reviewService.save(reviewDto);
+        Long savedReviewId = reviewService.save(reviewDto);
 
-        MovieDto findMovie = movieService.findById(1000000L);
-        ReviewDto findReview = reviewService.findById(1000L);
+        MovieDto findMovie = movieService.findById(savedMovieId);
+        ReviewDto findReview = reviewService.findById(savedReviewId);
 
         assertThat(findMovie.getVoteAverage()).isEqualTo(3.5f);
         assertThat(findMovie.getVoteCount()).isEqualTo(6);
@@ -64,36 +58,30 @@ class ReviewServiceTest {
 
         MovieDto movieDto = new MovieDto();
         movieDto.setTitle("test");
-        movieDto.setId(1000000L);
 
         movieDto.setVoteAverage(0);
         movieDto.setVoteCount(0);
         movieDto.setReleaseDate("2022-11-23");
-        movieService.save(movieDto);
-
-        MovieDto movie = movieService.findById(movieDto.getId());
-        System.out.println("movie = " + movie.getId());
+        Long savedMovieId = movieService.save(movieDto);
 
         ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewId(998L);
-        reviewDto.setMovieId(1000000L);
+        reviewDto.setMovieId(savedMovieId);
         reviewDto.setVoteRating(5);
         reviewService.save(reviewDto);
 
         ReviewDto reviewDto2 = new ReviewDto();
-        reviewDto2.setReviewId(999L);
-        reviewDto2.setMovieId(1000000L);
+        reviewDto2.setMovieId(savedMovieId);
         reviewDto2.setVoteRating(4);
         reviewService.save(reviewDto2);
 
-        MovieDto findMovie = movieService.findById(1000000L);
+        MovieDto findMovie1 = movieService.findById(savedMovieId);
 
-        assertThat(findMovie.getVoteAverage()).isEqualTo(4.5f);
-        assertThat(findMovie.getVoteCount()).isEqualTo(2);
+        assertThat(findMovie1.getVoteAverage()).isEqualTo(4.5f);
+        assertThat(findMovie1.getVoteCount()).isEqualTo(2);
 
         reviewService.delete(reviewDto2);
 
-        MovieDto findMovie2 = movieService.findById(1000000L);
+        MovieDto findMovie2 = movieService.findById(savedMovieId); // DTO는 엔티티 조회 시마다 new로 생성되므로 새로 조회해서 비교
 
         assertThat(findMovie2.getVoteAverage()).isEqualTo(5f);
         assertThat(findMovie2.getVoteCount()).isEqualTo(1);

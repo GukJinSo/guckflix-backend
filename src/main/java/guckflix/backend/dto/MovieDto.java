@@ -8,11 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -60,6 +58,12 @@ public class MovieDto {
         this.setReleaseDate(dateFormat.format(entity.getReleaseDate()));
     }
 
+    /**
+     *
+     * @param entityGenres
+     * @return
+     */
+
     @JsonIgnore
     public List<Map.Entry<Long, String>> genreToListEntry(String entityGenres){
 
@@ -87,6 +91,21 @@ public class MovieDto {
         return genres.stream().map((entry) -> Integer.toString(entry.getKey().intValue()))
                 .collect(Collectors.toList())
                 .stream().collect(Collectors.joining(","));
+    }
+
+    /**
+     * @param stringDate ex) "2021-11-25"
+     * @return java.sql.Date ex) 2021-11-25
+     * @throws ParseException
+     */
+    public java.sql.Date stringDateToSqlDate(String stringDate) throws ParseException {
+        java.sql.Date sqlDate = null;
+        if(stringDate != null || stringDate.equals("")) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date javaDate = formatter.parse(stringDate);
+            sqlDate = new java.sql.Date(javaDate.getTime());
+        }
+        return sqlDate;
     }
 
 }

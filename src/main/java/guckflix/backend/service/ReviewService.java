@@ -47,7 +47,7 @@ public class ReviewService {
 
     @Transactional
     public void delete(ReviewDto dto){
-        reviewRepository.delete(dtoToEntity(dto));
+        reviewRepository.remove(dtoToEntity(dto));
         Movie movie = movieRepository.findById(dto.getMovieId());
         movie.updateVoteDelete(dto.getVoteRating());
     }
@@ -62,6 +62,5 @@ public class ReviewService {
                 .build();
         return entity;
     }
-
 
 }

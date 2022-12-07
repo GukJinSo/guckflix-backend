@@ -1,5 +1,6 @@
 package guckflix.backend.repository;
 
+import guckflix.backend.dto.CreditDto;
 import guckflix.backend.entity.Credit;
 import guckflix.backend.entity.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class CreditRepository implements CommonRepository<Credit, Long> {
@@ -16,11 +18,7 @@ public class CreditRepository implements CommonRepository<Credit, Long> {
 
     @Override
     public Long save(Credit entity){
-        if(entity.getId() == null){
-            em.persist(entity);
-        } else {
-            em.merge(entity);
-        }
+        em.persist(entity);
         return entity.getId();
     }
 
@@ -30,7 +28,7 @@ public class CreditRepository implements CommonRepository<Credit, Long> {
     }
 
     @Override
-    public void delete(Credit entity){
+    public void remove(Credit entity){
         em.remove(entity);
     }
 

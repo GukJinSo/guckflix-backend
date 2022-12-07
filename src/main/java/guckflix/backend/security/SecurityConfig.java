@@ -5,11 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.*;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -17,8 +24,8 @@ public class SecurityConfig {
 
     private final PrincipalOauth2UserService oauth2UserService;
     private final ApiAuthenticationSuccessHandler successHandler;
-
     private final ApiAuthenticationEntryPoint entryPoint401;
+    private final ApiAuthenticationFailureHandler failuerHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -27,7 +34,7 @@ public class SecurityConfig {
                 .disable();
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/movies/**").authenticated()
-                .antMatchers("/members/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/members/**").hasRole("ADMIN")
                 .anyRequest().permitAll();
         http.httpBasic()
                 .disable();
@@ -35,11 +42,12 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .successHandler(successHandler);
+                .successHandler(successHandler)
+                .failureHandler(failuerHandler);
         http.oauth2Login()
                 .defaultSuccessUrl("http://localhost:3000/",true)
                 .userInfoEndpoint()
-                .userService(oauth2UserService); // 구글 로그인 완료 후 처리
+                .userService(oauth2UserService); // 구글 로그인 완료 처리
         http.logout()
                 .logoutUrl("/logout")
                 .deleteCookies("JSESSIONID");

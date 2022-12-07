@@ -29,7 +29,7 @@ public class VideoRepository implements CommonRepository<Video, String> {
     }
 
     @Override
-    public void delete(Video entity){
+    public void remove(Video entity){
         em.remove(entity);
     }
 

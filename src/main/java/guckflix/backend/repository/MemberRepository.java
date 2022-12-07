@@ -15,11 +15,7 @@ public class MemberRepository implements CommonRepository<Member, Long>{
 
     @Override
     public Long save(Member entity){
-        if(entity.getId() == null){
-            em.persist(entity);
-        } else {
-            em.merge(entity);
-        }
+        em.persist(entity);
         return entity.getId();
     }
 
@@ -29,7 +25,7 @@ public class MemberRepository implements CommonRepository<Member, Long>{
     }
 
     @Override
-    public void delete(Member entity){
+    public void remove(Member entity){
         em.remove(entity);
     }
 
