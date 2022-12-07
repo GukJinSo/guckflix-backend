@@ -7,6 +7,8 @@ import guckflix.backend.entity.enums.ISO3166;
 import guckflix.backend.entity.enums.ISO639;
 import guckflix.backend.entity.enums.VideoProvider;
 import guckflix.backend.entity.enums.VideoType;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

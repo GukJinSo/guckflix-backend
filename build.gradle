@@ -40,8 +40,11 @@ dependencies {
 	testRuntimeOnly 'com.h2database:h2:1.4.199'
 
 	// API 문서를 위한 스웨거
-	compileOnly group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-	compileOnly group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+
+	// validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// 스프링 시큐리티
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

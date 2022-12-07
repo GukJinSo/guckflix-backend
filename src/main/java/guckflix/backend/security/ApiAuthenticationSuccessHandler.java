@@ -1,7 +1,7 @@
 package guckflix.backend.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guckflix.backend.dto.ErrorDto;
+import guckflix.backend.exception.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;

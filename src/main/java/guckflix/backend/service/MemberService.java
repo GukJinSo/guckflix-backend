@@ -1,6 +1,7 @@
 package guckflix.backend.service;
 
 import guckflix.backend.dto.MemberDto;
+import guckflix.backend.dto.request.MemberForm;
 import guckflix.backend.entity.Member;
 import guckflix.backend.entity.enums.MemberRole;
 import guckflix.backend.repository.MemberRepository;
@@ -18,12 +19,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public String save(MemberDto dto){
-        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+    public String save(MemberForm form){
+        form.setPassword(passwordEncoder.encode(form.getPassword()));
         Member member = Member.builder()
-                .username(dto.getUsername())
-                .password(dto.getPassword())
-                .email(dto.getEmail())
+                .username(form.getUsername())
+                .password(form.getPassword())
+                .email(form.getEmail())
                 .role(MemberRole.USER).build();
         memberRepository.save(member);
         return member.getUsername();

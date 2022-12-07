@@ -28,7 +28,7 @@ public class MovieService {
         try {
             MovieDto movieDto = new MovieDto(movieRepository.findById(id));
             return movieDto;
-        } catch (EmptyResultDataAccessException e) {
+        } catch (NullPointerException e) {
             throw new RuntimeMovieNotFoundException("No movie of given id", e);
         }
     }
