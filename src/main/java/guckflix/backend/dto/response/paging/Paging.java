@@ -12,7 +12,8 @@ public class Paging<T> {
 
     @JsonProperty("page")
     private long requestPage;
-    
+
+    @JsonProperty("results")
     private List<T> list;
 
     @JsonProperty("total_count")

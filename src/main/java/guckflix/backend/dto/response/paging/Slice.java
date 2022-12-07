@@ -15,6 +15,7 @@ public class Slice<T> {
     @JsonProperty("page")
     private long requestPage;
 
+    @JsonProperty("results")
     private List<T> list;
 
     private int size;
