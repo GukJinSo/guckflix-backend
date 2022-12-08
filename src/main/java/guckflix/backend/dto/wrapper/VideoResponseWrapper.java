@@ -1,4 +1,4 @@
-package guckflix.backend.dto.response.wrapper;
+package guckflix.backend.dto.wrapper;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.dto.VideoDto;
@@ -9,14 +9,14 @@ import java.util.List;
 
 @Getter
 @Setter
-public class VideoResponse {
+public class VideoResponseWrapper {
 
     @JsonProperty("movie_id")
     private Long movieId;
 
-    private List<VideoDto> results;
+    private List<VideoDto.Response> results;
 
-    public VideoResponse(Long movieId, List<VideoDto> results) {
+    public VideoResponseWrapper(Long movieId, List<VideoDto.Response> results) {
         this.movieId = movieId;
         this.results = results;
     }

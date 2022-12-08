@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,13 +23,13 @@ public class Movie {
     @Column(length = 1000)
     private String overview;
 
-    private Date releaseDate;
+    private LocalDate releaseDate;
 
     private String genres;
 
     private float popularity;
 
-    private float voteCount;
+    private int voteCount;
 
     private float voteAverage;
 

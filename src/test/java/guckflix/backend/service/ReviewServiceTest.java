@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,61 +28,65 @@ class ReviewServiceTest {
     @Autowired ReviewService reviewService;
     @Autowired MovieService movieService;
 
+    @Autowired EntityManager em;
+
     @Test
     @Transactional
     public void review_add() throws Exception{
-        MovieDto movieDto = new MovieDto();
+        MovieDto.Post movieDto = new MovieDto.Post();
         movieDto.setTitle("test");
-        movieDto.setVoteAverage(4f);
-        movieDto.setVoteCount(5);
-        movieDto.setReleaseDate("2022-11-23");
+        movieDto.setReleaseDate(LocalDate.parse("2022-11-23"));
         Long savedMovieId = movieService.save(movieDto);
 
-        ReviewDto reviewDto = new ReviewDto();
+        ReviewDto.Post reviewDto = new ReviewDto.Post();
         reviewDto.setMovieId(savedMovieId);
         reviewDto.setUserId(115L);
-        reviewDto.setVoteRating(1);
-        Long savedReviewId = reviewService.save(reviewDto);
+        reviewDto.setVoteRating(5);
+        reviewService.save(reviewDto);
 
-        MovieDto findMovie = movieService.findById(savedMovieId);
-        ReviewDto findReview = reviewService.findById(savedReviewId);
+        MovieDto.Response findMovie = movieService.findById(savedMovieId);
+        assertThat(findMovie.getVoteAverage()).isEqualTo(5f);
 
-        assertThat(findMovie.getVoteAverage()).isEqualTo(3.5f);
-        assertThat(findMovie.getVoteCount()).isEqualTo(6);
+        ReviewDto.Post reviewDto2 = new ReviewDto.Post();
+        reviewDto2.setMovieId(savedMovieId);
+        reviewDto2.setUserId(115L);
+        reviewDto2.setVoteRating(4);
+        reviewService.save(reviewDto2);
 
-        assertThat(findReview.getVoteRating()).isEqualTo(1);
+        MovieDto.Response findMovie2 = movieService.findById(savedMovieId);
+        assertThat(findMovie2.getVoteCount()).isEqualTo(2);
+        assertThat(findMovie2.getVoteAverage()).isEqualTo(4.5f);
+
     }
 
     @Test
     @Transactional
     public void review_minus() throws Exception{
 
-        MovieDto movieDto = new MovieDto();
+        MovieDto.Post movieDto = new MovieDto.Post();
         movieDto.setTitle("test");
-
-        movieDto.setVoteAverage(0);
-        movieDto.setVoteCount(0);
-        movieDto.setReleaseDate("2022-11-23");
         Long savedMovieId = movieService.save(movieDto);
 
-        ReviewDto reviewDto = new ReviewDto();
+        ReviewDto.Post reviewDto = new ReviewDto.Post();
         reviewDto.setMovieId(savedMovieId);
         reviewDto.setVoteRating(5);
-        reviewService.save(reviewDto);
+        reviewDto.setUserId(115L);
+        Long reviewId = reviewService.save(reviewDto);
 
-        ReviewDto reviewDto2 = new ReviewDto();
+        ReviewDto.Post reviewDto2 = new ReviewDto.Post();
         reviewDto2.setMovieId(savedMovieId);
         reviewDto2.setVoteRating(4);
-        reviewService.save(reviewDto2);
+        reviewDto2.setUserId(115L);
+        Long reviewId2 = reviewService.save(reviewDto2);
 
-        MovieDto findMovie1 = movieService.findById(savedMovieId);
+        MovieDto.Response findMovie1 = movieService.findById(savedMovieId);
 
         assertThat(findMovie1.getVoteAverage()).isEqualTo(4.5f);
         assertThat(findMovie1.getVoteCount()).isEqualTo(2);
 
-        reviewService.delete(reviewDto2);
+        reviewService.delete(reviewId2, savedMovieId, 115L);
 
-        MovieDto findMovie2 = movieService.findById(savedMovieId); // DTO는 엔티티 조회 시마다 new로 생성되므로 새로 조회해서 비교
+        MovieDto.Response findMovie2 = movieService.findById(savedMovieId);
 
         assertThat(findMovie2.getVoteAverage()).isEqualTo(5f);
         assertThat(findMovie2.getVoteCount()).isEqualTo(1);

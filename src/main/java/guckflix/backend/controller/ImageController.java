@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 
-import static guckflix.backend.config.FileConst.*;
+import static guckflix.backend.file.FileConst.*;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 
 @RestController

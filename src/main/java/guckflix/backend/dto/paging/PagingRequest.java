@@ -1,4 +1,4 @@
-package guckflix.backend.dto.request;
+package guckflix.backend.dto.paging;
 
 import lombok.Getter;
 import lombok.Setter;

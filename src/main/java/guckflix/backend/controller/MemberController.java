@@ -1,14 +1,12 @@
 package guckflix.backend.controller;
 
 
-import guckflix.backend.dto.MemberDto;
-import guckflix.backend.dto.request.MemberForm;
-import guckflix.backend.dto.request.PasswordChangeForm;
+import guckflix.backend.dto.MemberDto.PasswordChangePatch;
+import guckflix.backend.dto.MemberDto.Post;
 import guckflix.backend.security.authen.PrincipalDetails;
 import guckflix.backend.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +26,7 @@ public class MemberController {
 
     @PostMapping("/member")
     @ApiOperation(value = "회원가입", notes = "아이디, 비밀번호, 이메일로 회원가입한다")
-    public ResponseEntity join(@Validated @ModelAttribute MemberForm form, BindingResult br) throws BindException {
+    public ResponseEntity join(@Validated @ModelAttribute Post form, BindingResult br) throws BindException {
         if (br.hasErrors()) {
             throw new BindException(br);
         }
@@ -38,7 +36,7 @@ public class MemberController {
 
     @PatchMapping("/member/password-change")
     @ApiOperation(value = "비밀번호 변경", notes = "비밀번호를 변경한다")
-    public ResponseEntity passwordChange(@Validated @ModelAttribute PasswordChangeForm form){
+    public ResponseEntity passwordChange(@Validated @ModelAttribute PasswordChangePatch form){
         return ResponseEntity.ok("OK");
     }
 

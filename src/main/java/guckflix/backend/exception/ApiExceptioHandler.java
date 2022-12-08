@@ -19,12 +19,27 @@ public class ApiExceptioHandler {
 
     private final MessageSource messageSource;
 
-    @ExceptionHandler(value = RuntimeMovieNotFoundException.class)
-    public ResponseEntity<ErrorDto> movieNotFound(RuntimeMovieNotFoundException e) {
-        log.warn("Exception", e);
+    @ExceptionHandler(value = MovieNotFoundException.class)
+    public ResponseEntity<ErrorDto> movieNotFound(MovieNotFoundException e) {
+        log.warn("RuntimeMovieNotFoundException", e);
         ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
+
+    @ExceptionHandler(value = NotAllowedIdException.class)
+    public ResponseEntity<ErrorDto> notAllowedIdException(NotAllowedIdException e) {
+        log.warn("NotAllowedIdException", e);
+        ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(value = MemberDuplicateException.class)
+    public ResponseEntity<ErrorDto> memberDuplicateException(MemberDuplicateException e) {
+        log.warn("MemberDuplicateException", e);
+        ErrorDto errorResponse = new ErrorDto(HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT, e.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
 
     /**
      * 요청 Locale에 따라 BindingResult 응답 메세지 변경

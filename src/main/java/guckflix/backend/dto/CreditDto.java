@@ -1,25 +1,36 @@
 package guckflix.backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import guckflix.backend.entity.Credit;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 public class CreditDto {
 
-    @JsonProperty("actor_id")
-    private Long id;
+    @Getter
+    @Setter
+    public static class Response{
 
-    private String name;
+        @JsonProperty("actor_id")
+        private Long id;
 
-    @JsonProperty("character")
-    private String casting;
+        private String name;
 
-    @JsonProperty("profile_path")
-    private String profilePath;
+        @JsonProperty("character")
+        private String casting;
 
-    private int order;
+        @JsonProperty("profile_path")
+        private String profilePath;
+
+        private int order;
+
+        public Response (Credit entity){
+            this.id = entity.getActor().getId();
+            this.name = entity.getActor().getName();
+            this.casting = entity.getCasting();
+            this.order = entity.getOrder();
+            this.profilePath = entity.getActor().getProfilePath();
+        }
+    }
 
 }

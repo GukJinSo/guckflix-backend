@@ -1,7 +1,7 @@
 package guckflix.backend.repository;
 
-import guckflix.backend.dto.request.PagingRequest;
-import guckflix.backend.dto.response.paging.Paging;
+import guckflix.backend.dto.paging.PagingRequest;
+import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.entity.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

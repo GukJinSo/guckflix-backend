@@ -1,6 +1,6 @@
 package guckflix.backend.config;
 
-import guckflix.backend.dto.request.PagingRequest;
+import guckflix.backend.dto.paging.PagingRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

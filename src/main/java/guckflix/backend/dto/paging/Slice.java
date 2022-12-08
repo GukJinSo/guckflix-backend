@@ -1,4 +1,4 @@
-package guckflix.backend.dto.response.paging;
+package guckflix.backend.dto.paging;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
