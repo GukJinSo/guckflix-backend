@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -40,11 +39,5 @@ public class MemberController {
         return ResponseEntity.ok("OK");
     }
 
-    /**
-     * 테스트
-     */
-    @GetMapping("/members")
-    public String members(@AuthenticationPrincipal PrincipalDetails member) {
-        return member.getMember().toString();
-    }
+
 }

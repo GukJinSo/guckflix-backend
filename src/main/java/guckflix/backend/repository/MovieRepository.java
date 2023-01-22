@@ -122,4 +122,9 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
         return totalPage;
     }
 
+    public List<Movie> findByIds(List<Long> movieIds) {
+        return em.createQuery("select m from Movie m where m.id in :ids")
+                .setParameter("id", movieIds)
+                .getResultList();
+    }
 }

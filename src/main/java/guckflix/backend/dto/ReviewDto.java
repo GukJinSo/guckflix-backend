@@ -3,6 +3,7 @@ package guckflix.backend.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.entity.Review;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ public class ReviewDto {
     @Getter
     @Setter
     @NoArgsConstructor
+    @ApiModel(value = "ReviewDto-Post")
     public static class Post {
 
         @NotBlank
@@ -38,6 +40,7 @@ public class ReviewDto {
     @Getter
     @Setter
     @NoArgsConstructor
+    @ApiModel(value = "ReviewDto-Response")
     public static class Response {
 
         @JsonProperty("review_id")

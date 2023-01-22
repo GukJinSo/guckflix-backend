@@ -1,5 +1,6 @@
 package guckflix.backend.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,15 +14,11 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class MemberDto {
 
-    private String username;
-
-    private String password;
-
-    private String email;
 
     @Getter
     @Setter
     @ToString
+    @ApiModel(value = "MemberDto-Post")
     public static class Post{
 
         @NotBlank
@@ -41,6 +38,7 @@ public class MemberDto {
     @Getter
     @Setter
     @ToString
+    @ApiModel(value = "MemberDto-PasswordChangePatch")
     public static class PasswordChangePatch {
 
         @NotBlank

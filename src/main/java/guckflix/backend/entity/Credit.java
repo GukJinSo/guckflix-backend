@@ -30,4 +30,9 @@ public class Credit {
     @ManyToOne(fetch = FetchType.LAZY)
     private Actor actor;
 
+    public void changeActor(Actor actor){
+        this.actor = actor;
+        actor.getCredits().add(this);
+    }
+
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.config.GenreCached;
 import guckflix.backend.entity.Movie;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class MovieDto {
     @Getter
     @Setter
     @NoArgsConstructor
+    @ApiModel(value = "MovieDto-Post")
     public static class Post {
 
         private String title;
@@ -42,6 +44,7 @@ public class MovieDto {
     @Getter
     @Setter
     @NoArgsConstructor
+    @ApiModel(value = "MovieDto-Response")
     public static class Response {
         private Long id;
 

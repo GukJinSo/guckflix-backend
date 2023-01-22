@@ -6,6 +6,7 @@ import guckflix.backend.entity.enums.ISO3166;
 import guckflix.backend.entity.enums.ISO639;
 import guckflix.backend.entity.enums.VideoProvider;
 import guckflix.backend.entity.enums.VideoType;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class VideoDto {
     @Getter
     @Setter
+    @ApiModel(value = "VideoDto-Response")
     public static class Response {
         @JsonProperty("movie_id")
         private Long movieId;

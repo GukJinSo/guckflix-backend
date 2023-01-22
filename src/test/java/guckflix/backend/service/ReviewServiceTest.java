@@ -84,7 +84,7 @@ class ReviewServiceTest {
         assertThat(findMovie1.getVoteAverage()).isEqualTo(4.5f);
         assertThat(findMovie1.getVoteCount()).isEqualTo(2);
 
-        reviewService.delete(reviewId2, savedMovieId, 115L);
+        reviewService.delete(reviewId2, savedMovieId, 119L);
 
         MovieDto.Response findMovie2 = movieService.findById(savedMovieId);
 
