@@ -1,5 +1,6 @@
 package guckflix.backend.service;
 
+import guckflix.backend.config.GenreCached;
 import guckflix.backend.dto.CreditDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.MovieDto.Response;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,11 +70,13 @@ public class MovieService {
         return search.convert(dtos);
     }
 
+    @Transactional
     public Long save(Post movieDto) {
         Movie movie = dtoToEntity(movieDto);
         return movieRepository.save(movie);
     }
 
+    @Transactional
     public void update(CreditDto.Update creditUpdateForm, MovieDto.Update movieUpdateForm, Long movieId){
         Movie movie= movieRepository.findById(movieId);
         List<Credit> credits = creditUpdateForm.getFormList().stream()
@@ -87,7 +91,7 @@ public class MovieService {
                 .backdropPath(dto.getBackdropPath())
                 .posterPath(dto.getPosterPath())
                 .overview(dto.getOverview())
-                .genres(genreToString(dto.getGenres()))
+                .genres(GenreCached.genreToString(dto.getGenres()))
                 .releaseDate(dto.getReleaseDate())
                 .build();
     }

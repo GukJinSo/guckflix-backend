@@ -1,5 +1,6 @@
 package guckflix.backend.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import guckflix.backend.entity.Genre;
 import guckflix.backend.repository.GenreRepository;
 import lombok.Getter;
@@ -7,10 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 스프링 시작 시 장르 테이블 캐시
@@ -37,6 +36,35 @@ public class GenreCached {
             genresMap.put(genre.getId(), genre.getGenreName());
         }
         genres = Collections.unmodifiableMap(genresMap);
+    }
+
+    @JsonIgnore
+    public static List<Map.Entry<Long, String>> genreToListEntry(String entityGenres){
+
+        if(entityGenres == null || entityGenres.equals("")){
+            return null;
+        }
+
+        Map<Long, String> genreMap = new HashMap<>();
+        List<String> genreList = Arrays.asList(entityGenres.split(","));
+        for (String genre : genreList) {
+            long genreId = Long.parseLong(genre);
+            genreMap.put(genreId, GenreCached.getGenres().get(genreId));
+        }
+        List<Map.Entry<Long, String>> collect = genreMap.entrySet().stream().collect(Collectors.toList());
+        return collect;
+    }
+
+    @JsonIgnore
+    public static String genreToString(List<Map.Entry<Long, String>> genres){
+
+        if(genres == null || genres.size() == 0) {
+            return null;
+        }
+
+        return genres.stream().map((entry) -> Integer.toString(entry.getKey().intValue()))
+                .collect(Collectors.toList())
+                .stream().collect(Collectors.joining(","));
     }
 
 }

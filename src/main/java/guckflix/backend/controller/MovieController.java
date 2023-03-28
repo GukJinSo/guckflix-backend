@@ -22,9 +22,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Locale;
@@ -154,11 +156,13 @@ public class MovieController {
     /**
      * 영화 등록
      */
-    @PostMapping("/movies")
     @ApiOperation(value = "영화 등록", notes = "영화 프로필 등록")
-    public ResponseEntity post(@RequestBody MovieDto.Post form){
-        String originUUID = fileUploader.upload(form.getOriginFile(), FileConst.DIRECTORY_ORIGINAL);
-        String w500UUID = fileUploader.upload(form.getW500FIle(), FileConst.DIRECTORY_W500);
+    @PostMapping(value = "/movies", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity post(@RequestPart MovieDto.Post form,
+                               @RequestPart MultipartFile originFile,
+                               @RequestPart MultipartFile w500File){
+        String originUUID = fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, ".jpg");
+        String w500UUID = fileUploader.upload(w500File, FileConst.DIRECTORY_W500, ".jpg");
         form.setBackdropPath(originUUID);
         form.setPosterPath(w500UUID);
         movieService.save(form);

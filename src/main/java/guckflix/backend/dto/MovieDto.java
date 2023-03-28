@@ -34,10 +34,6 @@ public class MovieDto {
         @JsonProperty("release_date")
         private LocalDate releaseDate;
 
-        private MultipartFile w500FIle;
-
-        private MultipartFile originFile;
-
         @JsonProperty("backdrop_path")
         private String backdropPath;
 
@@ -79,7 +75,7 @@ public class MovieDto {
         @JsonIgnore
         public Response(Movie entity){
             this.setId(entity.getId());
-            this.setGenres(genreToListEntry(entity.getGenres()));
+            this.setGenres(GenreCached.genreToListEntry(entity.getGenres()));
             this.setOverview(entity.getOverview());
             this.setPopularity(entity.getPopularity());
             this.setTitle(entity.getTitle());
@@ -119,34 +115,7 @@ public class MovieDto {
     }
 
 
-    @JsonIgnore
-    public static List<Map.Entry<Long, String>> genreToListEntry(String entityGenres){
 
-        if(entityGenres == null || entityGenres.equals("")){
-            return null;
-        }
-
-        Map<Long, String> genreMap = new HashMap<>();
-        List<String> genreList = Arrays.asList(entityGenres.split(","));
-        for (String genre : genreList) {
-            long genreId = Long.parseLong(genre);
-            genreMap.put(genreId, GenreCached.getGenres().get(genreId));
-        }
-        List<Map.Entry<Long, String>> collect = genreMap.entrySet().stream().collect(Collectors.toList());
-        return collect;
-    }
-
-    @JsonIgnore
-    public static String genreToString(List<Map.Entry<Long, String>> genres){
-
-        if(genres == null || genres.size() == 0) {
-            return null;
-        }
-
-        return genres.stream().map((entry) -> Integer.toString(entry.getKey().intValue()))
-                .collect(Collectors.toList())
-                .stream().collect(Collectors.joining(","));
-    }
 
 
 }

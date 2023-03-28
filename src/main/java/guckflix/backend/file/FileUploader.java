@@ -12,9 +12,9 @@ import java.util.UUID;
  */
 public class FileUploader {
 
-    public String upload(MultipartFile file, String directory) {
+    public String upload(MultipartFile file, String directory, String extention) {
 
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID().toString() + extention;
         /** Try-with-resources */
         try (FileOutputStream fos = new FileOutputStream(FileConst.IMAGE_DIRECTORY_ROOT + "/" + directory + "/" + uuid)){
             fos.write(file.getBytes());

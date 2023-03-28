@@ -58,7 +58,7 @@ public class Movie {
     public void updateDetail(MovieDto.Update form, List<Credit> credits) {
         this.title = form.getTitle();
         this.backdropPath = form.getBackdropPath();
-        this.genres = MovieDto.genreToString(form.getGenres());
+        this.genres = GenreCached.genreToString(form.getGenres());
         this.overview = form.getOverview();
         this.releaseDate = form.getReleaseDate();
 
