@@ -1,5 +1,6 @@
 package guckflix.backend.config;
 
+import guckflix.backend.file.FileUploader;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,5 +46,13 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new PagingRequestArgumentResolver());
+    }
+
+    /**
+     * 이미지 업로드 클래스
+     */
+    @Bean
+    public FileUploader fileUploader(){
+        return new FileUploader();
     }
 }

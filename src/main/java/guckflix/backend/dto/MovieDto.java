@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +33,10 @@ public class MovieDto {
 
         @JsonProperty("release_date")
         private LocalDate releaseDate;
+
+        private MultipartFile w500FIle;
+
+        private MultipartFile originFile;
 
         @JsonProperty("backdrop_path")
         private String backdropPath;
@@ -87,6 +92,32 @@ public class MovieDto {
 
 
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @ApiModel(value = "MovieDto-Response")
+    public static class Update {
+
+        private Long id;
+
+        private String title;
+
+        private String overview;
+
+        private List<Map.Entry<Long, String>> genres;
+
+        @JsonProperty("release_date")
+        private LocalDate releaseDate;
+
+        @JsonProperty("backdrop_path")
+        private String backdropPath;
+
+        @JsonProperty("poster_path")
+        private String posterPath;
+
+    }
+
 
     @JsonIgnore
     public static List<Map.Entry<Long, String>> genreToListEntry(String entityGenres){

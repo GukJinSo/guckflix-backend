@@ -1,17 +1,20 @@
 package guckflix.backend.service;
 
+import guckflix.backend.dto.CreditDto;
+import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.MovieDto.Response;
 import guckflix.backend.dto.paging.PagingRequest;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.paging.Slice;
+import guckflix.backend.entity.Credit;
 import guckflix.backend.entity.Movie;
 import guckflix.backend.exception.MovieNotFoundException;
+import guckflix.backend.repository.CreditRepository;
 import guckflix.backend.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +26,7 @@ import static guckflix.backend.dto.MovieDto.*;
 public class MovieService {
 
     private final MovieRepository movieRepository;
+    private final CreditRepository creditRepository;
 
     public Response findById(Long id){
         try {
@@ -67,6 +71,14 @@ public class MovieService {
     public Long save(Post movieDto) {
         Movie movie = dtoToEntity(movieDto);
         return movieRepository.save(movie);
+    }
+
+    public void update(CreditDto.Update creditUpdateForm, MovieDto.Update movieUpdateForm, Long movieId){
+        Movie movie= movieRepository.findById(movieId);
+        List<Credit> credits = creditUpdateForm.getFormList().stream()
+                .map((form) -> creditRepository.findById(form.getId()))
+                .collect(Collectors.toList());
+        movie.updateDetail(movieUpdateForm, credits);
     }
 
     private Movie dtoToEntity(Post dto) {

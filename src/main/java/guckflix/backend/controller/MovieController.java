@@ -10,6 +10,8 @@ import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.dto.wrapper.CreditResponseWrapper;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.wrapper.VideoResponseWrapper;
+import guckflix.backend.file.FileConst;
+import guckflix.backend.file.FileUploader;
 import guckflix.backend.security.authen.PrincipalDetails;
 import guckflix.backend.service.CreditService;
 import guckflix.backend.service.MovieService;
@@ -19,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,8 @@ public class MovieController {
     private final CreditService creditService;
     private final VideoService videoService;
     private final ReviewService reviewService;
+
+    private final FileUploader fileUploader;
 
     /**
      * popularity 기준 페이징
@@ -146,6 +151,43 @@ public class MovieController {
     }
 
 
+    /**
+     * 영화 등록
+     */
+    @PostMapping("/movies")
+    @ApiOperation(value = "영화 등록", notes = "영화 프로필 등록")
+    public ResponseEntity post(@RequestBody MovieDto.Post form){
+        String originUUID = fileUploader.upload(form.getOriginFile(), FileConst.DIRECTORY_ORIGINAL);
+        String w500UUID = fileUploader.upload(form.getW500FIle(), FileConst.DIRECTORY_W500);
+        form.setBackdropPath(originUUID);
+        form.setPosterPath(w500UUID);
+        movieService.save(form);
+        return new ResponseEntity(HttpStatus.OK);
+    };
+
+    /**
+     * 영화 수정
+     */
+    @PatchMapping("/movies/{movieId}")
+    @ApiOperation(value = "영화 수정", notes = "영화 프로필과 크레딧을 변경")
+    public ResponseEntity patch(
+                                @PathVariable Long movieId,
+                                @RequestBody CreditDto.Update creditUpdateForm,
+                                @RequestBody MovieDto.Update movieUpdateForm){
+        movieService.update(creditUpdateForm, movieUpdateForm, movieId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    /**
+     * 영화 크레딧 한 줄 삭제
+     */
+    @DeleteMapping("/movies/{movieId}/{creditId}")
+    @ApiOperation(value = "영화 크레딧 삭제", notes = "영화 수정 페이지에서 크레딧을 한 줄 삭제")
+    public ResponseEntity creditDelete(@PathVariable Long movieId,
+                                       @PathVariable Long creditId){
+        creditService.delete(creditId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 
 

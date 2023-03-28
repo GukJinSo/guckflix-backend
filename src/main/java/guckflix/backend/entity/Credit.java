@@ -35,4 +35,16 @@ public class Credit {
         actor.getCredits().add(this);
     }
 
+    public void update(int order, String casting) {
+        this.order = order;
+        this.casting = casting;
+    }
+
+    public void changeMovie(Movie movie) {
+        if(this.movie != null){
+            this.movie.getCredits().remove(this);
+        }
+        this.movie = movie;
+        movie.credits.add(this);
+    }
 }

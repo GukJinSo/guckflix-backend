@@ -51,6 +51,7 @@ public class ReviewService {
         reviewRepository.remove(review);
         Movie movie = movieRepository.findById(movieId);
         movie.updateVoteDelete(review.getVoteRating());
+
     }
 
     private Review dtoToEntity(Post dto){
