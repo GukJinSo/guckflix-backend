@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.entity.Actor;
 import guckflix.backend.entity.Credit;
 import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +42,7 @@ public class ActorDto {
 
         @Getter
         @Setter
+        @AllArgsConstructor
         public static class ActorPostCredit {
 
             @NotBlank
@@ -50,9 +53,6 @@ public class ActorDto {
             @JsonProperty("character")
             private String casting;
 
-            @Range(min = 0L, max = 30L)
-            private int order;
-
         }
     }
 
@@ -61,6 +61,8 @@ public class ActorDto {
     @NoArgsConstructor
     @ApiModel(value = "ActorDto-Response")
     public static class Response {
+
+        private Long id;
 
         private String name;
 
@@ -75,11 +77,17 @@ public class ActorDto {
         private List<ActorResponseCredit> credits;
 
         public Response (Actor actorDetail) {
+            this.id = actorDetail.getId();
             this.name = actorDetail.getName();
             this.profilePath = actorDetail.getProfilePath();
             this.overview = actorDetail.getOverview();
             this.birthDay = actorDetail.getBirthDay();
-            this.credits = actorDetail.getCredits().stream().map((entity)-> new ActorResponseCredit(entity)).collect(Collectors.toList());
+
+            List<ActorResponseCredit> creditDto = new ArrayList<>();
+            for (Credit credit : actorDetail.getCredits()) {
+                creditDto.add(new ActorResponseCredit(credit));
+            }
+            this.credits = creditDto;
         }
 
         @Getter

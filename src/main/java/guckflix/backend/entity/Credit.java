@@ -30,10 +30,6 @@ public class Credit {
     @ManyToOne(fetch = FetchType.LAZY)
     private Actor actor;
 
-    public void changeActor(Actor actor){
-        this.actor = actor;
-        actor.getCredits().add(this);
-    }
 
     public void update(int order, String casting) {
         this.order = order;
@@ -48,13 +44,12 @@ public class Credit {
         movie.getCredits().add(this);
     }
 
-    public void removeRelationWithMovie(){
-        this.movie.getCredits().remove(this);
-        this.movie = null;
+    public void changeActor(Actor actor){
+        if(this.actor != null){
+            this.actor.getCredits().remove(this);
+        }
+        this.actor = actor;
+        actor.getCredits().add(this);
     }
 
-    public void removeRelationWithActor() {
-        this.actor.getCredits().remove(this);
-        this.actor = null;
-    }
 }
