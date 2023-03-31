@@ -4,6 +4,7 @@ import guckflix.backend.config.GenreCached;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.ReviewDto;
 import guckflix.backend.entity.Genre;
+import guckflix.backend.exception.NotAllowedIdException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,12 +85,31 @@ class ReviewServiceTest {
         assertThat(findMovie1.getVoteAverage()).isEqualTo(4.5f);
         assertThat(findMovie1.getVoteCount()).isEqualTo(2);
 
-        reviewService.delete(reviewId2, savedMovieId, 119L);
+        reviewService.delete(reviewId2, savedMovieId, 115L);
 
         MovieDto.Response findMovie2 = movieService.findById(savedMovieId);
 
         assertThat(findMovie2.getVoteAverage()).isEqualTo(5f);
         assertThat(findMovie2.getVoteCount()).isEqualTo(1);
+
+    }
+
+    @Test
+    @Transactional
+    public void review_minus_notAllowedId() throws Exception{
+
+        MovieDto.Post movieDto = new MovieDto.Post();
+        movieDto.setTitle("test");
+        Long savedMovieId = movieService.save(movieDto);
+
+        ReviewDto.Post reviewDto = new ReviewDto.Post();
+        reviewDto.setMovieId(savedMovieId);
+        reviewDto.setVoteRating(4);
+        reviewDto.setUserId(115L);
+        Long reviewId = reviewService.save(reviewDto);
+
+        Assertions.assertThatThrownBy(()-> reviewService.delete(reviewId, savedMovieId, 119L))
+                .isInstanceOf(NotAllowedIdException.class);
 
     }
 }

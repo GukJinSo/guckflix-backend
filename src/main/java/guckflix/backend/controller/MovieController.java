@@ -166,7 +166,7 @@ public class MovieController {
         form.setBackdropPath(originUUID);
         form.setPosterPath(w500UUID);
         movieService.save(form);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.CREATED);
     };
 
     /**
@@ -174,11 +174,25 @@ public class MovieController {
      */
     @PatchMapping("/movies/{movieId}")
     @ApiOperation(value = "영화 수정", notes = "영화 프로필과 크레딧을 변경")
-    public ResponseEntity patch(
+    public ResponseEntity update(
                                 @PathVariable Long movieId,
-                                @RequestBody CreditDto.Update creditUpdateForm,
-                                @RequestBody MovieDto.Update movieUpdateForm){
-        movieService.update(creditUpdateForm, movieUpdateForm, movieId);
+                                @RequestPart MultipartFile w500File,
+                                @RequestPart MultipartFile originFile,
+                                @RequestPart MovieDto.Update movieUpdateForm,
+                                @RequestPart CreditDto.Update creditUpdateForm){
+        MovieDto.Response dto = movieService.findById(movieId);
+
+        fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
+        fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
+        String originUUID = fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, ".jpg");
+        String w500UUID = fileUploader.upload(w500File, FileConst.DIRECTORY_W500, ".jpg");
+        movieUpdateForm.setBackdropPath(originUUID);
+        movieUpdateForm.setPosterPath(w500UUID);
+
+        if (creditUpdateForm.getFormList() != null || creditUpdateForm.getFormList().size() != 0) {
+            movieService.update(creditUpdateForm, movieUpdateForm, movieId);
+        }
+
         return new ResponseEntity(HttpStatus.OK);
     }
 

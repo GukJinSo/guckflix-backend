@@ -38,4 +38,7 @@ public class ActorRepository implements CommonRepository <Actor, Long>{
                 .getSingleResult();
     }
 
+    public List<Actor> findAllByIds(List<Long> ids) {
+        return em.createQuery("select a from Actor a where id in :ids", Actor.class).setParameter("ids", ids).getResultList();
+    }
 }

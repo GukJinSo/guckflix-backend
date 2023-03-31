@@ -87,8 +87,6 @@ public class CreditDto {
             @JsonProperty("actor_id")
             private Long actorId;
 
-            private String name;
-
             @JsonProperty("movie_id")
             private Long movieId;
 
@@ -97,6 +95,12 @@ public class CreditDto {
 
             private int order;
 
+            public Form(Long actorId, Long movieId, String casting, int order) {
+                this.actorId = actorId;
+                this.movieId = movieId;
+                this.casting = casting;
+                this.order = order;
+            }
         }
 
     }

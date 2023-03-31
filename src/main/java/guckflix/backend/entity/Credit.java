@@ -45,6 +45,16 @@ public class Credit {
             this.movie.getCredits().remove(this);
         }
         this.movie = movie;
-        movie.credits.add(this);
+        movie.getCredits().add(this);
+    }
+
+    public void removeRelationWithMovie(){
+        this.movie.getCredits().remove(this);
+        this.movie = null;
+    }
+
+    public void removeRelationWithActor() {
+        this.actor.getCredits().remove(this);
+        this.actor = null;
     }
 }

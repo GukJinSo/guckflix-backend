@@ -7,9 +7,11 @@ import guckflix.backend.dto.MovieDto.Response;
 import guckflix.backend.dto.paging.PagingRequest;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.paging.Slice;
+import guckflix.backend.entity.Actor;
 import guckflix.backend.entity.Credit;
 import guckflix.backend.entity.Movie;
 import guckflix.backend.exception.MovieNotFoundException;
+import guckflix.backend.repository.ActorRepository;
 import guckflix.backend.repository.CreditRepository;
 import guckflix.backend.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,8 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
     private final CreditRepository creditRepository;
+
+    private final ActorRepository actorRepository;
 
     public Response findById(Long id){
         try {
@@ -78,11 +82,36 @@ public class MovieService {
 
     @Transactional
     public void update(CreditDto.Update creditUpdateForm, MovieDto.Update movieUpdateForm, Long movieId){
-        Movie movie= movieRepository.findById(movieId);
-        List<Credit> credits = creditUpdateForm.getFormList().stream()
-                .map((form) -> creditRepository.findById(form.getId()))
-                .collect(Collectors.toList());
-        movie.updateDetail(movieUpdateForm, credits);
+
+        Movie movie = movieRepository.findById(movieId);
+
+        // 영화에 걸려있는 Credit 삭제
+        for (Credit credit : movie.getCredits()) {
+            creditRepository.remove(credit);
+        }
+
+        // 새 Credit 생성
+        List<Credit> credits = new ArrayList<>();
+        int index = 0;
+        for (CreditDto.Update.Form form : creditUpdateForm.getFormList()) {
+            Actor actor = actorRepository.findById(form.getActorId());
+            Credit credit = Credit.builder()
+                    .actor(actor)
+                    .movie(movie)
+                    .casting(form.getCasting())
+                    .order(index++)
+                    .build();
+            credits.add(credit);
+            creditRepository.save(credit);
+        }
+
+        // 영화 정보 수정
+        movie.updateDetail(movieUpdateForm);
+
+        // Credit 수정
+        for (Credit credit : credits){
+            movie.updateCredit(credit); // Movie <-> Credit 양방향 연관관계 설정
+        }
     }
 
     private Movie dtoToEntity(Post dto) {

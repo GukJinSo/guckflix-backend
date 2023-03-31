@@ -40,10 +40,10 @@ public class Movie {
     private String posterPath;
 
     @OneToMany(mappedBy = "movie")
-    public List<Credit> credits = new ArrayList<>();
+    private List<Credit> credits = new ArrayList<>();
 
     @OneToMany(mappedBy = "movie")
-    public List<Video> videos = new ArrayList<>();
+    private List<Video> videos = new ArrayList<>();
 
     public void updateVoteAdd(float voteRating) {
         this.voteAverage = ((this.voteAverage * voteCount) + voteRating) / (voteCount + 1);
@@ -55,16 +55,15 @@ public class Movie {
         this.voteCount -= 1;
     }
 
-    public void updateDetail(MovieDto.Update form, List<Credit> credits) {
+    public void updateDetail(MovieDto.Update form) {
         this.title = form.getTitle();
         this.backdropPath = form.getBackdropPath();
         this.genres = GenreCached.genreToString(form.getGenres());
         this.overview = form.getOverview();
         this.releaseDate = form.getReleaseDate();
+    }
 
-        this.credits = credits;
-        for (Credit credit : credits) {
-            credit.changeMovie(this);
-        }
+    public void updateCredit( Credit credit){
+        credit.changeMovie(this);
     }
 }

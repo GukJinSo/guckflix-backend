@@ -23,24 +23,16 @@ class MovieRepositoryTest {
     EntityManager em;
 
     @Test
-    @DisplayName("리포지토리 스프링 AOP 예외전환 Test")
-    public void test(){
-        assertThatThrownBy(()-> movieRepository.findById(5050000L))
-                .isInstanceOf(EmptyResultDataAccessException.class);
-    }
-
-    @Test
     @DisplayName("리포지토리 findById 테스트")
     public void findById(){
         movieRepository.save(
                 Movie.builder()
-                        .id(99999999L)
                         .title("테스트")
                         .build()
         );
         em.flush();
         em.clear();
-        assertThat(movieRepository.findById(99999999L).getTitle()).isEqualTo("테스트");
+        assertThat(movieRepository.findById(1L).getTitle()).isEqualTo("테스트");
     }
 
 

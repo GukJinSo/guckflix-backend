@@ -5,6 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 /**
@@ -22,5 +25,14 @@ public class FileUploader {
              throw new RuntimeIOException("upload error");
         }
         return uuid;
+    }
+
+    public void delete(String directory, String deleteFileName){
+        Path filePath = Paths.get(FileConst.IMAGE_DIRECTORY_ROOT + "/" + directory + "/" + deleteFileName);
+        try {
+            Files.delete(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

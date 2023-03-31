@@ -31,7 +31,6 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
     @Override
     public Long save(Movie entity){
         em.persist(entity);
-        em.flush();
         return entity.getId();
     }
 
