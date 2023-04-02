@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.entity.Actor;
 import guckflix.backend.entity.Credit;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
@@ -59,6 +56,7 @@ public class ActorDto {
     @Getter
     @Setter
     @NoArgsConstructor
+    @ToString
     @ApiModel(value = "ActorDto-Response")
     public static class Response {
 
@@ -93,6 +91,7 @@ public class ActorDto {
         @Getter
         @Setter
         @NoArgsConstructor
+        @ToString
         public static class ActorResponseCredit {
 
             @JsonProperty("credit_id")

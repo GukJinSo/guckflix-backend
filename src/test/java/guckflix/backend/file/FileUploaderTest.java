@@ -66,6 +66,6 @@ public class FileUploaderTest {
                         .file(w500File)
                         .file(json)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 }

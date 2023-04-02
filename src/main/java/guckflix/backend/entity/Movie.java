@@ -18,6 +18,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class Movie {
 
+    @Column(name = "movie_id")
     @Id @GeneratedValue private Long id;
 
     private String title;

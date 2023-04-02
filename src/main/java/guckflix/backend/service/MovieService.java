@@ -122,6 +122,7 @@ public class MovieService {
                 .overview(dto.getOverview())
                 .genres(GenreCached.genreToString(dto.getGenres()))
                 .releaseDate(dto.getReleaseDate())
+                .credits(new ArrayList<>())
                 .build();
     }
 

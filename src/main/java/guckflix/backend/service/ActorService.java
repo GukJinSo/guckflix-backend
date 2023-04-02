@@ -50,8 +50,8 @@ public class ActorService {
             int maxOrder = 0;
             if(findMovie.getCredits() != null){
                 for(Credit credit : findMovie.getCredits()) {
-                    if(credit.getOrder() > maxOrder) {
-                        maxOrder = credit.getOrder();
+                    if(credit.getOrder() >= maxOrder) {
+                        maxOrder = credit.getOrder()+1;
                     }
                 }
             }
@@ -64,15 +64,16 @@ public class ActorService {
         List<Credit> credits = form.getCredits().stream().map((dto) ->
                 Credit.builder()
                         .casting(dto.getCasting())
-                        .actor(actor)
                         .order(maxOrders.get(dto.getMovieId()))
                         .movie(movieMap.get(dto.getMovieId()))
                         .build()
         ).collect(Collectors.toList());
 
-        // 양방향 연관관계 편의 세팅 후에 크레딧 save
+        // 크레딧 save
         for (Credit credit : credits) {
             credit.changeActor(actor);
+            System.out.println("credit.getMovie().getTitle() = " + credit.getMovie().getTitle());
+            credit.changeMovie(movieMap.get(credit.getMovie().getId()));
             creditRepository.save(credit);
         }
 

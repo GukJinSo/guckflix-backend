@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +29,8 @@ public class Actor {
 
     private float popularity;
 
-    @OneToMany
-    @JoinColumn(name = "actor_id")
-    private List<Credit> credits;
+    @OneToMany(mappedBy = "actor")
+    private List<Credit> credits = new ArrayList<>();
+
 }
+

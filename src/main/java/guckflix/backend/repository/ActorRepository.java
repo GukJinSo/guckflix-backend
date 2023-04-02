@@ -32,7 +32,7 @@ public class ActorRepository implements CommonRepository <Actor, Long>{
     public Actor findActorDetailById(Long id){
         return em.createQuery("select a from Actor a" +
                         " left join fetch a.credits c" +
-                        " left join fetch c.movie" +
+                        " left join fetch c.movie m" +
                         " where a.id = :id", Actor.class)
                 .setParameter("id", id)
                 .getSingleResult();
