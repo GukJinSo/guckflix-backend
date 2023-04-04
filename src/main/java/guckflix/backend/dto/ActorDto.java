@@ -118,4 +118,22 @@ public class ActorDto {
         }
 
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Update {
+
+        private String name;
+
+        @JsonProperty("profile_path")
+        private String profilePath;
+
+        private String overview;
+
+        @JsonProperty("birth_day")
+        private LocalDate birthDay;
+
+    }
 }

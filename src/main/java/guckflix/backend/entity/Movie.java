@@ -5,7 +5,6 @@ import guckflix.backend.dto.MovieDto;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 @EqualsAndHashCode
 public class Movie {
 
-    @Column(name = "movie_id")
     @Id @GeneratedValue private Long id;
 
     private String title;
@@ -59,7 +57,7 @@ public class Movie {
     public void updateDetail(MovieDto.Update form) {
         this.title = form.getTitle();
         this.backdropPath = form.getBackdropPath();
-        this.genres = GenreCached.genreToString(form.getGenres());
+        this.genres = GenreCached.genreListToString(form.getGenres());
         this.overview = form.getOverview();
         this.releaseDate = form.getReleaseDate();
     }

@@ -120,10 +120,24 @@ public class MovieService {
                 .backdropPath(dto.getBackdropPath())
                 .posterPath(dto.getPosterPath())
                 .overview(dto.getOverview())
-                .genres(GenreCached.genreToString(dto.getGenres()))
+                .genres(GenreCached.genreListToString(dto.getGenres()))
                 .releaseDate(dto.getReleaseDate())
                 .credits(new ArrayList<>())
                 .build();
     }
 
+    @Transactional
+    public void delete(Long movieId) {
+        Movie movie = movieRepository.findById(movieId);
+
+        // 크레딧 삭제
+        List<Credit> credits = movie.getCredits();
+        for (Credit credit : credits) {
+            creditRepository.remove(credit);
+        }
+
+        // 영화 삭제
+        movieRepository.remove(movie);
+
+    }
 }

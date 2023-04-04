@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -95,6 +97,31 @@ class ActorServiceTest {
         assertThat(hwan.getCredits().get(0).getOrder()).isEqualTo(1);
         System.out.println("hwan = " + hwan);
         System.out.println("hwan.getCredits() = " + hwan.getCredits());
+
+    }
+
+    @Test
+    public void delete_test() throws Exception{
+
+        ActorDto.Post form = new ActorDto.Post();
+        form.setBirthDay(LocalDate.of(1994,11,26));
+        form.setName("gukjin");
+        form.setOverview("1994년 대구에서 출생한 ....");
+        form.setCredits(Arrays.asList(
+                new ActorDto.Post.ActorPostCredit(savedMovieId1, "수감자1"),
+                new ActorDto.Post.ActorPostCredit(savedMovieId2, "국장"),
+                new ActorDto.Post.ActorPostCredit(savedMovieId3, "주인공")
+        ));
+
+        Long savedId1 = actorService.save(form);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        actorService.delete(savedId1);
+
+        assertThatThrownBy(()->actorService.findDetail(savedId1))
+                .isInstanceOf(EmptyResultDataAccessException.class);
 
     }
 

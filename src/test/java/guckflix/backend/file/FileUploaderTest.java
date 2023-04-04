@@ -1,8 +1,10 @@
 package guckflix.backend.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.security.authen.PrincipalDetails;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -51,7 +54,7 @@ public class FileUploaderTest {
         MovieDto.Post postForm = new MovieDto.Post();
         postForm.setTitle("Test Movie");
         postForm.setOverview("This is a test movie");
-        postForm.setGenres(Arrays.asList(Map.entry(1L, "Action"), Map.entry(2L, "Action")));
+        postForm.setGenres(Arrays.asList(new GenreDto(1L, "Action"), new GenreDto(2L, "Action")));
         postForm.setReleaseDate(LocalDate.now());
         String dtoJson = objectMapper.writeValueAsString(postForm);
 
@@ -60,6 +63,10 @@ public class FileUploaderTest {
         MockMultipartFile w500File = new MockMultipartFile("w500File", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "test data".getBytes());
         MockMultipartFile json = new MockMultipartFile("form", "form", "application/json", dtoJson.getBytes(StandardCharsets.UTF_8));
 
+        File beforeDir = new File(FileConst.IMAGE_DIRECTORY_ROOT + "/" + FileConst.DIRECTORY_ORIGINAL);
+        File[] beforeFiles = beforeDir.listFiles();
+        int beforeFileLength = beforeFiles.length;
+
         // MockMvc로 요청 전송
         mockMvc.perform(MockMvcRequestBuilders.multipart("/movies")
                         .file(originFile)
@@ -67,5 +74,13 @@ public class FileUploaderTest {
                         .file(json)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated());
+
+        File afterDir = new File(FileConst.IMAGE_DIRECTORY_ROOT + "/" + FileConst.DIRECTORY_ORIGINAL);
+        File[] afterFiles = afterDir.listFiles();
+        int afterFileLength = afterFiles.length;
+
+        System.out.println("beforeFileLength = " + beforeFileLength);
+        System.out.println("afterFileLength = " + afterFileLength);
+        Assertions.assertThat(beforeFileLength).isEqualTo(afterFileLength-1);
     }
 }

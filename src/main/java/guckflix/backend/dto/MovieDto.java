@@ -8,13 +8,9 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MovieDto {
 
@@ -29,7 +25,7 @@ public class MovieDto {
 
         private String overview;
 
-        private List<Map.Entry<Long, String>> genres;
+        private List<GenreDto> genres;
 
         @JsonProperty("release_date")
         private LocalDate releaseDate;
@@ -61,7 +57,7 @@ public class MovieDto {
         @JsonProperty("vote_average")
         private float voteAverage;
 
-        private List<Map.Entry<Long, String>> genres;
+        private List<GenreDto> genres;
 
         @JsonProperty("release_date")
         private LocalDate releaseDate;
@@ -75,7 +71,7 @@ public class MovieDto {
         @JsonIgnore
         public Response(Movie entity){
             this.setId(entity.getId());
-            this.setGenres(GenreCached.genreToListEntry(entity.getGenres()));
+            this.setGenres(GenreCached.genreStringToList(entity.getGenres()));
             this.setOverview(entity.getOverview());
             this.setPopularity(entity.getPopularity());
             this.setTitle(entity.getTitle());
@@ -101,7 +97,7 @@ public class MovieDto {
 
         private String overview;
 
-        private List<Map.Entry<Long, String>> genres;
+        private List<GenreDto> genres;
 
         @JsonProperty("release_date")
         private LocalDate releaseDate;

@@ -1,6 +1,7 @@
 package guckflix.backend.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import guckflix.backend.dto.GenreDto;
 import guckflix.backend.entity.Genre;
 import guckflix.backend.repository.GenreRepository;
 import lombok.Getter;
@@ -39,32 +40,32 @@ public class GenreCached {
     }
 
     @JsonIgnore
-    public static List<Map.Entry<Long, String>> genreToListEntry(String entityGenres){
+    public static List<GenreDto> genreStringToList(String entityGenres){
 
         if(entityGenres == null || entityGenres.equals("")){
             return null;
         }
 
-        Map<Long, String> genreMap = new HashMap<>();
+        List<GenreDto> genreDtos = new ArrayList<>();
         List<String> genreList = Arrays.asList(entityGenres.split(","));
         for (String genre : genreList) {
             long genreId = Long.parseLong(genre);
-            genreMap.put(genreId, GenreCached.getGenres().get(genreId));
+            String genreName = GenreCached.getGenres().get(genreId);
+            genreDtos.add(new GenreDto(genreId, genreName));
         }
-        List<Map.Entry<Long, String>> collect = genreMap.entrySet().stream().collect(Collectors.toList());
-        return collect;
+        return genreDtos;
     }
 
     @JsonIgnore
-    public static String genreToString(List<Map.Entry<Long, String>> genres){
+    public static String genreListToString(List<GenreDto> genreDtos){
 
         if(genres == null || genres.size() == 0) {
             return null;
         }
 
-        return genres.stream().map((entry) -> Integer.toString(entry.getKey().intValue()))
-                .collect(Collectors.toList())
-                .stream().collect(Collectors.joining(","));
+        return genreDtos.stream().map(genreDto -> Long.toString(genreDto.getId()))
+                .collect(Collectors.joining(","));
+
     }
 
 }

@@ -15,16 +15,14 @@ import java.util.UUID;
  */
 public class FileUploader {
 
-    public String upload(MultipartFile file, String directory, String extention) {
+    public void upload(MultipartFile file, String directory, String saveFileName) {
 
-        String uuid = UUID.randomUUID().toString() + extention;
         /** Try-with-resources */
-        try (FileOutputStream fos = new FileOutputStream(FileConst.IMAGE_DIRECTORY_ROOT + "/" + directory + "/" + uuid)){
+        try (FileOutputStream fos = new FileOutputStream(FileConst.IMAGE_DIRECTORY_ROOT + "/" + directory + "/" + saveFileName)){
             fos.write(file.getBytes());
         } catch (IOException e){
              throw new RuntimeIOException("upload error");
         }
-        return uuid;
     }
 
     public void delete(String directory, String deleteFileName){

@@ -33,8 +33,8 @@ public class SecurityConfig {
         http.csrf()
                 .disable();
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/movies/**").authenticated()
-                .antMatchers(HttpMethod.POST,"/members/**").hasRole("ADMIN")
+                // .antMatchers(HttpMethod.POST,"/movies/**").authenticated()
+                // .antMatchers(HttpMethod.POST,"/members/**").hasRole("ADMIN")
                 .anyRequest().permitAll();
         http.httpBasic()
                 .disable();

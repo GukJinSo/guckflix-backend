@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nonapi.io.github.classgraph.utils.LogNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 @Slf4j
 @Api(tags = {"영화 API"})
@@ -161,11 +163,17 @@ public class MovieController {
     public ResponseEntity post(@RequestPart MovieDto.Post form,
                                @RequestPart MultipartFile originFile,
                                @RequestPart MultipartFile w500File){
-        String originUUID = fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, ".jpg");
-        String w500UUID = fileUploader.upload(w500File, FileConst.DIRECTORY_W500, ".jpg");
+
+        String originUUID = UUID.randomUUID().toString() + ".jpg";
+        String w500UUID = UUID.randomUUID().toString() + ".jpg";
         form.setBackdropPath(originUUID);
         form.setPosterPath(w500UUID);
+
         movieService.save(form);
+
+        fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
+        fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
+
         return new ResponseEntity(HttpStatus.CREATED);
     };
 
@@ -180,18 +188,32 @@ public class MovieController {
                                 @RequestPart MultipartFile originFile,
                                 @RequestPart MovieDto.Update movieUpdateForm,
                                 @RequestPart CreditDto.Update creditUpdateForm){
-        MovieDto.Response dto = movieService.findById(movieId);
 
-        fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
-        fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
-        String originUUID = fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, ".jpg");
-        String w500UUID = fileUploader.upload(w500File, FileConst.DIRECTORY_W500, ".jpg");
+        MovieDto.Response dto = movieService.findById(movieId);
+        String originUUID = UUID.randomUUID().toString()+".jpg";
+        String w500UUID = UUID.randomUUID().toString()+ ".jpg";
         movieUpdateForm.setBackdropPath(originUUID);
         movieUpdateForm.setPosterPath(w500UUID);
 
-        if (creditUpdateForm.getFormList() != null || creditUpdateForm.getFormList().size() != 0) {
-            movieService.update(creditUpdateForm, movieUpdateForm, movieId);
-        }
+        movieService.update(creditUpdateForm, movieUpdateForm, movieId);
+        fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
+        fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
+        fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
+        fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    /**
+     * 영화 삭제
+     */
+    @DeleteMapping("/movies/{movieId}")
+    @ApiOperation(value = "영화 삭제", notes = "영화를 삭제하고 크레딧도 함께 삭제")
+    public ResponseEntity delete(@PathVariable Long movieId){
+        MovieDto.Response dto = movieService.findById(movieId);
+        movieService.delete(movieId);
+        fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
+        fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
 
         return new ResponseEntity(HttpStatus.OK);
     }

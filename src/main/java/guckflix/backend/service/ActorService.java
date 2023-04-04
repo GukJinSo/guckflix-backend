@@ -84,4 +84,15 @@ public class ActorService {
         Actor actor = actorRepository.findActorDetailById(actorId);
         return new Response(actor);
     }
+
+    @Transactional
+    public void delete(Long actorId) {
+        Actor actor = actorRepository.findActorDetailById(actorId);
+        List<Credit> credits = actor.getCredits();
+        for (Credit credit : credits) {
+            creditRepository.remove(credit);
+        }
+        actorRepository.remove(actor);
+
+    }
 }
