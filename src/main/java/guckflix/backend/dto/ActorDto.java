@@ -123,7 +123,7 @@ public class ActorDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public class Update {
+    public static class Update {
 
         private String name;
 

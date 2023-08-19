@@ -64,7 +64,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // 내 서버가 응답 시 자격인증을 받아들일 지 설정
-        config.addAllowedOrigin("http://localhost:3000/"); // 리액트 서버만 허용
+        config.addAllowedOrigin("http://localhost:3000/"); // 로컬 리액트 서버 허용
+        config.addAllowedOrigin("https://www.guckflix.site/");
+        config.addAllowedOrigin("https://guckflix.site/");
         config.addAllowedMethod("*"); // 모든 메서드 허용
         config.addAllowedHeader("*");
         source.registerCorsConfiguration("/**", config); // 전체에 cors 필터 설정

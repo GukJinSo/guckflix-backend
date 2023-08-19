@@ -23,9 +23,8 @@ public class PagingRequestArgumentResolver implements HandlerMethodArgumentResol
         String paramLimit = webRequest.getParameter("limit");
 
         /**
-         * page : 사용자가 실제 db의 몇 페이지를 요청했는가? (0부터 시작)
-         * requestPage : 뷰 단에서 자신이 몇 페이지를 요청했는지 확인할 변수 (0 또는 1부터 시작)
-         * 그러나 0페이지 요청 시 1페이지, 1페이지 요청하더라도 1페이지라고 응답되어야 함
+         * requestPage : API 사용자가 요청한 페이지 넘버를 확인하기 위한 변수. 0페이지를 요청하면 1페이지, 1페이지를 요청해도 1페이지로 응답 dto에 함께 나감.
+         * page : requestPage에 따라 요청된 실제 db의 페이지 넘버. 프론트에서는 알 필요 없는 변수
          * limit : 페이지 사이즈
          * offset : (페이지 사이즈 X page) 번째 데이터부터 출력
          */

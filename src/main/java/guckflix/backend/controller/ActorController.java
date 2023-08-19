@@ -36,7 +36,7 @@ public class ActorController {
 
     @GetMapping("/actors/{actorId}")
     @ApiOperation(value = "배우 조회", notes = "배우를 조회한다")
-    public ResponseEntity<ActorDto.Response> getActor(@PathVariable Long actorId) throws BindException {
+    public ResponseEntity<ActorDto.Response> getActor(@PathVariable Long actorId) {
         return ResponseEntity.ok(actorService.findDetail(actorId));
     }
 
@@ -62,14 +62,24 @@ public class ActorController {
         fileUploader.delete(FileConst.DIRECTORY_PROFILE, actor.getProfilePath());
 
         return new ResponseEntity(HttpStatus.OK);
-    }
+    } 
 
     @PatchMapping("/actors/{actorId}")
     @ApiOperation(value = "배우 수정", notes = "배우 정보와 이미지를 수정한다. 크레딧도 수정 가능")
     public ResponseEntity update(@PathVariable Long actorId,
                                  @RequestPart ActorDto.Update actorUpdafeForm,
                                  @RequestPart MultipartFile w500File,
-                                 @RequestPart CreditDto.Update creditUpdateForm
-    ){
+                                 @RequestPart CreditDto.Update creditUpdateForm) {
+
+        ActorDto.Response findActor = actorService.findDetail(actorId);
+
+        String profileUUID = UUID.randomUUID().toString()+ ".jpg";
+        actorUpdafeForm.setProfilePath(profileUUID);
+        actorService.update(actorId, actorUpdafeForm, creditUpdateForm);
+        fileUploader.delete(FileConst.DIRECTORY_PROFILE, findActor.getProfilePath());
+        fileUploader.upload(w500File, FileConst.DIRECTORY_PROFILE, profileUUID);
+        
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 }

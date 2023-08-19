@@ -2,21 +2,22 @@ package guckflix.backend.service;
 
 import guckflix.backend.dto.ActorDto;
 import guckflix.backend.dto.ActorDto.Response;
+import guckflix.backend.dto.CreditDto;
 import guckflix.backend.entity.Actor;
 import guckflix.backend.entity.Credit;
 import guckflix.backend.entity.Movie;
+import guckflix.backend.exception.NotFoundException;
 import guckflix.backend.repository.ActorRepository;
 import guckflix.backend.repository.CreditRepository;
 import guckflix.backend.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,7 +73,6 @@ public class ActorService {
         // 크레딧 save
         for (Credit credit : credits) {
             credit.changeActor(actor);
-            System.out.println("credit.getMovie().getTitle() = " + credit.getMovie().getTitle());
             credit.changeMovie(movieMap.get(credit.getMovie().getId()));
             creditRepository.save(credit);
         }
@@ -81,8 +81,12 @@ public class ActorService {
     }
 
     public Response findDetail(Long actorId) {
-        Actor actor = actorRepository.findActorDetailById(actorId);
-        return new Response(actor);
+        try {
+            Actor actor = actorRepository.findActorDetailById(actorId);
+            return new Response(actor);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("No actor of given id", e);
+        }
     }
 
     @Transactional
@@ -94,5 +98,44 @@ public class ActorService {
         }
         actorRepository.remove(actor);
 
+    }
+
+    @Transactional
+    public void update(Long actorId, ActorDto.Update actorUpdafeForm, CreditDto.Update creditUpdateForm) {
+        Actor actor = actorRepository.findActorDetailById(actorId);
+        actor.updateDetail(actorUpdafeForm);
+
+        List<CreditDto.Update.Form> updateForms = creditUpdateForm.getFormList();
+
+        // ConcurrentModificationException 회피?
+        Iterator<Credit> iterator = actor.getCredits().iterator();
+        while (iterator.hasNext()) {
+            Credit credit = iterator.next();
+            iterator.remove();
+            creditRepository.remove(credit);
+        }
+
+        for (CreditDto.Update.Form updateForm : updateForms) {
+            Movie movie = movieRepository.findById(updateForm.getMovieId());
+
+            List<Credit> credits = movie.getCredits();
+
+            int maxOrder = 0;
+            for (Credit credit : credits) {
+                int order = credit.getOrder();
+                if (order > maxOrder) {
+                    maxOrder = order;
+                }
+            }
+
+            Credit newCredit = Credit.builder()
+                    .movie(movie)
+                    .order(maxOrder)
+                    .casting(updateForm.getCasting())
+                    .actor(actor)
+                    .build();
+
+            creditRepository.save(newCredit);
+        }
     }
 }

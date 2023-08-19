@@ -1,5 +1,6 @@
 package guckflix.backend.entity;
 
+import guckflix.backend.dto.ActorDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,6 +32,14 @@ public class Actor {
 
     @OneToMany(mappedBy = "actor")
     private List<Credit> credits = new ArrayList<>();
+
+    public void updateDetail(ActorDto.Update actorUpdafeForm) {
+        name = actorUpdafeForm.getName();
+        profilePath = actorUpdafeForm.getProfilePath();
+        birthDay = actorUpdafeForm.getBirthDay();
+        overview = actorUpdafeForm.getOverview();
+    }
+
 
 }
 

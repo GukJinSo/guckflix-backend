@@ -10,7 +10,7 @@ import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.entity.Actor;
 import guckflix.backend.entity.Credit;
 import guckflix.backend.entity.Movie;
-import guckflix.backend.exception.MovieNotFoundException;
+import guckflix.backend.exception.NotFoundException;
 import guckflix.backend.repository.ActorRepository;
 import guckflix.backend.repository.CreditRepository;
 import guckflix.backend.repository.MovieRepository;
@@ -35,12 +35,11 @@ public class MovieService {
     private final ActorRepository actorRepository;
 
     public Response findById(Long id){
-        try {
-            Movie findMovie = movieRepository.findById(id);
-            return new Response(findMovie);
-        } catch (NullPointerException e) {
-            throw new MovieNotFoundException("No movie of given id", e);
+        Movie findMovie = movieRepository.findById(id);
+        if (findMovie == null) {
+            throw new NotFoundException("No movie of given id");
         }
+        return new Response(findMovie);
     }
 
     public Paging<Response> findSimilar(Long id, PagingRequest pagingRequest) {

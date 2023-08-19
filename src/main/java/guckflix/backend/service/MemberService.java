@@ -2,7 +2,7 @@ package guckflix.backend.service;
 
 import guckflix.backend.entity.Member;
 import guckflix.backend.entity.enums.MemberRole;
-import guckflix.backend.exception.MemberDuplicateException;
+import guckflix.backend.exception.DuplicateException;
 import guckflix.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,7 +25,7 @@ public class MemberService {
     public String save(Post form){
 
         List<Member> findMember = memberRepository.findByUsername(form.getUsername());
-        if (findMember.size() != 0) throw new MemberDuplicateException("already exist id");
+        if (findMember.size() != 0) throw new DuplicateException("already exist id");
 
         form.setPassword(passwordEncoder.encode(form.getPassword()));
         Member member = Member.builder()

@@ -2,6 +2,7 @@ package guckflix.backend.service;
 
 import guckflix.backend.dto.ActorDto;
 import guckflix.backend.dto.MovieDto;
+import guckflix.backend.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,9 +122,19 @@ class ActorServiceTest {
         actorService.delete(savedId1);
 
         assertThatThrownBy(()->actorService.findDetail(savedId1))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+                .isInstanceOf(NotFoundException.class);
 
     }
 
 
+    @Test
+    public void updateTest() throws Exception{
+        //given
+
+
+        //when
+
+        //then
+
+    }
 }

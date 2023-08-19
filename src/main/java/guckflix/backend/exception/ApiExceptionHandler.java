@@ -26,23 +26,23 @@ public class ApiExceptionHandler {
 
     private final MessageSource messageSource;
 
-    @ExceptionHandler(value = MovieNotFoundException.class)
-    public ResponseEntity<ErrorDto> movieNotFound(MovieNotFoundException e) {
-        log.warn("RuntimeMovieNotFoundException", e);
+    @ExceptionHandler(value = NotFoundException.class)
+    public ResponseEntity<ErrorDto> notFound(NotFoundException e) {
+        log.warn("NotFoundException", e);
         ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(value = NotAllowedIdException.class)
-    public ResponseEntity<ErrorDto> notAllowedIdException(NotAllowedIdException e) {
+    public ResponseEntity<ErrorDto> notAllowedId(NotAllowedIdException e) {
         log.warn("NotAllowedIdException", e);
         ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler(value = MemberDuplicateException.class)
-    public ResponseEntity<ErrorDto> memberDuplicateException(MemberDuplicateException e) {
-        log.warn("MemberDuplicateException", e);
+    @ExceptionHandler(value = DuplicateException.class)
+    public ResponseEntity<ErrorDto> memberDuplicate(DuplicateException e) {
+        log.warn("DuplicateException", e);
         ErrorDto errorResponse = new ErrorDto(HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }

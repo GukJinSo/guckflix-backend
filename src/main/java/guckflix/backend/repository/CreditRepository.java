@@ -38,9 +38,4 @@ public class CreditRepository implements CommonRepository<Credit, Long> {
                 .getResultList();
     }
 
-    public Long saveAndFlush(Credit entity){
-        em.persist(entity);
-        em.flush();
-        return entity.getId();
-    }
 }

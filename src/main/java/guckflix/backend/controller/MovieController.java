@@ -7,9 +7,8 @@ import guckflix.backend.dto.CreditDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.VideoDto;
 import guckflix.backend.dto.paging.Slice;
-import guckflix.backend.dto.wrapper.CreditResponseWrapper;
 import guckflix.backend.dto.paging.Paging;
-import guckflix.backend.dto.wrapper.VideoResponseWrapper;
+import guckflix.backend.dto.wrapper.ResponseWrapper;
 import guckflix.backend.file.FileConst;
 import guckflix.backend.file.FileUploader;
 import guckflix.backend.security.authen.PrincipalDetails;
@@ -21,7 +20,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nonapi.io.github.classgraph.utils.LogNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -90,13 +88,13 @@ public class MovieController {
     }
 
     /**
-     * 크레딧(배역, 배우) 보기
+     * 영화 크레딧(배역, 배우) 보기
      */
     @GetMapping("/movies/{movieId}/credits")
     @ApiOperation(value = "영화 크레딧 리스트", notes = "ID로 영화 상세를 조회한 뒤, 영화 크레딧과 배우 조회")
-    public ResponseEntity<CreditResponseWrapper> credits(@PathVariable Long movieId) {
+    public ResponseEntity<ResponseWrapper> credits(@PathVariable Long movieId) {
         List<CreditDto.Response> credit = creditService.findActors(movieId);
-        return ResponseEntity.ok(new CreditResponseWrapper(movieId, credit));
+        return ResponseEntity.ok(ResponseWrapper.withMovieId(movieId, credit));
     }
 
     /**
@@ -105,10 +103,10 @@ public class MovieController {
      */
     @GetMapping("/movies/{movieId}/videos")
     @ApiOperation(value = "영상물 조회", notes = "ID로 영화 상세를 조회하고, Locale에 따라 언어별 영상 조회")
-    public ResponseEntity<VideoResponseWrapper> videos(@PathVariable Long movieId,
+    public ResponseEntity<ResponseWrapper> videos(@PathVariable Long movieId,
                                                        Locale locale) {
         List<VideoDto.Response> result = videoService.findById(movieId, locale.getLanguage());
-        return ResponseEntity.ok(new VideoResponseWrapper(movieId, result));
+        return ResponseEntity.ok(ResponseWrapper.withMovieId(movieId, result));
     }
 
     /**

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * 14, 15, 19처럼 3개의 로우로 분리해서 장르 테이블에 조인하면 많은 I/O 발생 + sql 어려움
  * 장르는 정적인 데이터. 따라서 테이블은 따로 두되 어플리케이션 시작 시 캐시된 이 곳에서 조인함
  *
- * unmodifiableMap으로 생성해서 어플리케이션 로딩 시 외에 put 불가
+ * unmodifiableMap으로 생성해서 어플리케이션 로딩 시 외에 수정 불가
  */
 @Component
 @RequiredArgsConstructor
