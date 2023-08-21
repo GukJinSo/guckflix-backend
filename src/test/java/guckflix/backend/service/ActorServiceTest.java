@@ -3,6 +3,7 @@ package guckflix.backend.service;
 import guckflix.backend.dto.ActorDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.exception.NotFoundException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +63,15 @@ class ActorServiceTest {
         savedMovieId4 = movieService.save(movie4);
     }
 
+    @AfterEach
+    public void afterEach() {
+        movieService.delete(savedMovieId1);
+        movieService.delete(savedMovieId2);
+        movieService.delete(savedMovieId3);
+        movieService.delete(savedMovieId4);
+    }
+
     @Test
-    @Rollback(value = false)
     public void saveTest() throws Exception{
 
         ActorDto.Post form = new ActorDto.Post();

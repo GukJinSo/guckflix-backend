@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import static guckflix.backend.dto.MovieDto.*;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class MovieService {
 

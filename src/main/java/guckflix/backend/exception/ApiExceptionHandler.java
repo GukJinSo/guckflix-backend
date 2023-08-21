@@ -28,21 +28,21 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<ErrorDto> notFound(NotFoundException e) {
-        log.warn("NotFoundException", e);
+        log.info("NotFoundException", e);
         ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(value = NotAllowedIdException.class)
     public ResponseEntity<ErrorDto> notAllowedId(NotAllowedIdException e) {
-        log.warn("NotAllowedIdException", e);
+        log.info("NotAllowedIdException", e);
         ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(value = DuplicateException.class)
     public ResponseEntity<ErrorDto> memberDuplicate(DuplicateException e) {
-        log.warn("DuplicateException", e);
+        log.info("DuplicateException", e);
         ErrorDto errorResponse = new ErrorDto(HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }

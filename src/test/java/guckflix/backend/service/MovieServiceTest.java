@@ -47,7 +47,6 @@ class MovieServiceTest {
 
     @Test
     @Transactional
-    @Rollback(value = false)
     public void updateTest() throws Exception {
 
         Actor actor1 = Actor.builder().name("김씨").overview("잘생겼다").credits(new ArrayList<>()).build();
@@ -106,7 +105,6 @@ class MovieServiceTest {
 
     @Test
     @Transactional
-    @Rollback(value = false)
     public void delete_test() throws Exception{
         Actor actor1 = Actor.builder().name("김씨").overview("잘생겼다").credits(new ArrayList<>()).build();
         Actor actor2 = Actor.builder().name("박씨").overview("못생겼다").credits(new ArrayList<>()).build();
