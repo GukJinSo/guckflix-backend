@@ -8,7 +8,7 @@ package guckflix.backend.config;
 public abstract class QueryWeight {
 
     public final static float VOTE_AVERAGE_WEIGHT = 2000.0f;
-    public final static float VOTE_COUNT_WEIGHT = 0.1f;
+    public final static int VOTE_COUNT_WEIGHT = 1;
     public final static float POPULARITY_WEIGHT = 0.1f;
 
 }
