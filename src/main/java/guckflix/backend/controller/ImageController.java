@@ -38,5 +38,4 @@ public class ImageController {
         }
         return ResponseEntity.ok().contentType(IMAGE_JPEG).body(resource);
     }
-
 }

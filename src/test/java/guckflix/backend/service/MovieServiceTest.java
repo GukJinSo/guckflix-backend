@@ -10,11 +10,9 @@ import guckflix.backend.entity.Movie;
 import guckflix.backend.repository.ActorRepository;
 import guckflix.backend.repository.CreditRepository;
 import guckflix.backend.repository.MovieRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -49,9 +47,9 @@ class MovieServiceTest {
     @Transactional
     public void updateTest() throws Exception {
 
-        Actor actor1 = Actor.builder().name("김씨").overview("잘생겼다").credits(new ArrayList<>()).build();
-        Actor actor2 = Actor.builder().name("박씨").overview("못생겼다").credits(new ArrayList<>()).build();
-        Actor actor3 = Actor.builder().name("황씨").overview("그럭저럭 생겼다").credits(new ArrayList<>()).build();
+        Actor actor1 = Actor.builder().name("김씨").biography("잘생겼다").credits(new ArrayList<>()).build();
+        Actor actor2 = Actor.builder().name("박씨").biography("못생겼다").credits(new ArrayList<>()).build();
+        Actor actor3 = Actor.builder().name("황씨").biography("그럭저럭 생겼다").credits(new ArrayList<>()).build();
 
         Movie movie = Movie.builder().title("Test Movie")
                 .overview("테스트 영화")
@@ -106,8 +104,8 @@ class MovieServiceTest {
     @Test
     @Transactional
     public void delete_test() throws Exception{
-        Actor actor1 = Actor.builder().name("김씨").overview("잘생겼다").credits(new ArrayList<>()).build();
-        Actor actor2 = Actor.builder().name("박씨").overview("못생겼다").credits(new ArrayList<>()).build();
+        Actor actor1 = Actor.builder().name("김씨").biography("잘생겼다").credits(new ArrayList<>()).build();
+        Actor actor2 = Actor.builder().name("박씨").biography("못생겼다").credits(new ArrayList<>()).build();
 
         actorRepository.save(actor1);
         actorRepository.save(actor2);

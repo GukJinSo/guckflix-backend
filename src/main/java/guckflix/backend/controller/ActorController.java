@@ -1,15 +1,10 @@
 package guckflix.backend.controller;
 
 import guckflix.backend.dto.ActorDto;
-import guckflix.backend.dto.ActorDto.Post;
 import guckflix.backend.dto.CreditDto;
-import guckflix.backend.dto.MemberDto;
-import guckflix.backend.dto.MovieDto;
 import guckflix.backend.file.FileConst;
 import guckflix.backend.file.FileUploader;
 import guckflix.backend.service.ActorService;
-import guckflix.backend.service.CreditService;
-import guckflix.backend.service.MovieService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

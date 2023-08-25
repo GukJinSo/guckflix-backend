@@ -6,13 +6,11 @@ import guckflix.backend.entity.Credit;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ActorDto {
 
@@ -25,12 +23,19 @@ public class ActorDto {
         @NotBlank
         private String name;
 
+        @JsonProperty("death_day")
+        private LocalDate deathDay;
+
+        @JsonProperty("place_of_birth")
+        private String placeOfBirth;
+
+        private float popularity;
         @NotBlank
         @JsonProperty("profile_path")
         private String profilePath;
 
-        @Length(min = 10, max = 500)
-        private String overview;
+        @Length(max = 5000)
+        private String biography;
 
         @JsonProperty("birth_day")
         private LocalDate birthDay;
@@ -67,7 +72,13 @@ public class ActorDto {
         @JsonProperty("profile_path")
         private String profilePath;
 
-        private String overview;
+        private String biography;
+
+        @JsonProperty("death_day")
+        private LocalDate deathDay;
+
+        @JsonProperty("place_of_birth")
+        private String placeOfBirth;
 
         @JsonProperty("birth_day")
         private LocalDate birthDay;
@@ -78,7 +89,7 @@ public class ActorDto {
             this.id = actorDetail.getId();
             this.name = actorDetail.getName();
             this.profilePath = actorDetail.getProfilePath();
-            this.overview = actorDetail.getOverview();
+            this.biography = actorDetail.getBiography();
             this.birthDay = actorDetail.getBirthDay();
 
             List<ActorResponseCredit> creditDto = new ArrayList<>();
@@ -130,10 +141,16 @@ public class ActorDto {
         @JsonProperty("profile_path")
         private String profilePath;
 
-        private String overview;
+        private String biography;
 
         @JsonProperty("birth_day")
         private LocalDate birthDay;
+
+        @JsonProperty("death_day")
+        private LocalDate deathDay;
+
+        @JsonProperty("place_of_birth")
+        private String placeOfBirth;
 
     }
 }

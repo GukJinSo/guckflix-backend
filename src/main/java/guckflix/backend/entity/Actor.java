@@ -19,10 +19,13 @@ public class Actor {
     @Column(name = "actor_id")
     @Id @GeneratedValue private Long id;
 
-    private String overview;
+    private String biography;
 
-    @Column(name = "birth_day")
     private LocalDate birthDay;
+
+    private LocalDate deathDay;
+
+    private String placeOfBirth;
 
     private String name;
 
@@ -37,7 +40,7 @@ public class Actor {
         name = actorUpdafeForm.getName();
         profilePath = actorUpdafeForm.getProfilePath();
         birthDay = actorUpdafeForm.getBirthDay();
-        overview = actorUpdafeForm.getOverview();
+        biography = actorUpdafeForm.getBiography();
     }
 
 
