@@ -117,9 +117,12 @@ public class ActorDto {
             @JsonProperty("poster_path")
             private String posterPath;
 
+            private String title;
+
             private int order;
 
             public ActorResponseCredit(Credit entity) {
+                this.title = entity.getMovie().getTitle();
                 this.movieId = entity.getMovie().getId();
                 this.casting = entity.getCasting();
                 this.posterPath = entity.getMovie().getPosterPath();
