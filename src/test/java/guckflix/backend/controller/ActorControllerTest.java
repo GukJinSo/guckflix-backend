@@ -57,7 +57,7 @@ class ActorControllerTest {
         ActorDto.Post form = new ActorDto.Post();
         form.setBirthDay(LocalDate.of(1994,11,26));
         form.setName("gukjin");
-        form.setOverview("1994년 대구에서 출생한 ....");
+        form.setBiography("1994년 대구에서 출생한 ....");
         form.setCredits(Arrays.asList(
                 new ActorDto.Post.ActorPostCredit(1L, "수감자1"),
                 new ActorDto.Post.ActorPostCredit(2L, "국장"),

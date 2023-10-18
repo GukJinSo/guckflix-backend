@@ -38,4 +38,9 @@ public class CreditRepository implements CommonRepository<Credit, Long> {
                 .getResultList();
     }
 
+    public List<Credit> findByActorId(Long actorId) {
+        return em.createQuery("select c from Credit c join fetch c.actor where c.actor.id = :actorId", Credit.class)
+                .setParameter("actorId", actorId)
+                .getResultList();
+    }
 }

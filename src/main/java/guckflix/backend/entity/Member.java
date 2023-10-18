@@ -25,13 +25,12 @@ public class Member {
 
     private String email;
 
-    @Column(name = "member_role")
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
     private String provider;
 
-    @Column(name= " provider_id")
+    @Column(name= "provider_id")
     private String providerId;
 
 }

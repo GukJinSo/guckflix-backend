@@ -15,7 +15,6 @@ import guckflix.backend.repository.ActorRepository;
 import guckflix.backend.repository.CreditRepository;
 import guckflix.backend.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -79,7 +78,7 @@ public class MovieService {
     }
 
     @Transactional
-    public void update(CreditDto.Update creditUpdateForm, MovieDto.Update movieUpdateForm, Long movieId){
+    public void update(List<CreditDto.Post> creditPatchForm, MovieDto.Update movieUpdateForm, Long movieId){
 
         Movie movie = movieRepository.findById(movieId);
 
@@ -91,7 +90,7 @@ public class MovieService {
         // 새 Credit 생성
         List<Credit> credits = new ArrayList<>();
         int index = 0;
-        for (CreditDto.Update.Form form : creditUpdateForm.getFormList()) {
+        for (CreditDto.Post form : creditPatchForm) {
             Actor actor = actorRepository.findById(form.getActorId());
             Credit credit = Credit.builder()
                     .actor(actor)

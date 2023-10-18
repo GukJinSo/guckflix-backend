@@ -13,7 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 /**
- * API 문서 자동화 생성 도구 Swagger 설정
+ * API 문서 Swagger 설정
  */
 @Configuration
 @EnableSwagger2

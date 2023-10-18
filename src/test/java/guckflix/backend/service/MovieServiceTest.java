@@ -75,12 +75,13 @@ class MovieServiceTest {
         actorRepository.save(actor3);
         creditRepository.save(credit);
 
-        CreditDto.Update creditUpdateForm = new CreditDto.Update();
-        creditUpdateForm.setFormList(Arrays.asList(
-                new CreditDto.Update.Form(actor1.getId(), movie.getId(), "더덕", 0),
-                new CreditDto.Update.Form(actor2.getId(), movie.getId(), "감자", 1),
-                new CreditDto.Update.Form(actor3.getId(), movie.getId(), "고구마", 2)
-        ));
+        List<CreditDto.Post> creditPostForm = new ArrayList<>();
+
+        creditPostForm = Arrays.asList(
+                new CreditDto.Post(actor1.getId(), "더덕"),
+                new CreditDto.Post(actor2.getId(), "감자"),
+                new CreditDto.Post(actor3.getId(), "고구마")
+        );
 
         MovieDto.Update movieUpdateForm = new MovieDto.Update();
         movieUpdateForm.setId(movie.getId());
@@ -89,7 +90,7 @@ class MovieServiceTest {
         movieUpdateForm.setGenres(Arrays.asList(new GenreDto(2L, "Genre Changed")));
         movieUpdateForm.setReleaseDate(LocalDate.of(1982,7,13));
 
-        movieService.update(creditUpdateForm, movieUpdateForm, movie.getId());
+        movieService.update(creditPostForm, movieUpdateForm, movie.getId());
 
         em.flush();
         em.clear();

@@ -36,12 +36,18 @@ public class Actor {
     @OneToMany(mappedBy = "actor")
     private List<Credit> credits = new ArrayList<>();
 
-    public void updateDetail(ActorDto.Update actorUpdafeForm) {
+    public void updateInfo(ActorDto.UpdateInfo actorUpdafeForm) {
         name = actorUpdafeForm.getName();
         profilePath = actorUpdafeForm.getProfilePath();
         birthDay = actorUpdafeForm.getBirthDay();
+        deathDay = actorUpdafeForm.getDeathDay();
         biography = actorUpdafeForm.getBiography();
     }
+
+    public void updatePhoto(String uuid) {
+        this.profilePath = uuid;
+    }
+
 
 
 }

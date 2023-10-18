@@ -3,6 +3,8 @@ package guckflix.backend.security.authen;
 import guckflix.backend.entity.Member;
 import guckflix.backend.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +28,16 @@ public class PrincipalDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        System.out.println("loadUser 호출됨");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication != null){
+            String username1 = ((PrincipalDetails) authentication.getPrincipal()).getMember().getUsername();
+            System.out.println("username1 = " + username1);
+        }
+
         List<Member> members = memberRepository.findByUsername(username);
         if(members.size() != 0){
             return new PrincipalDetails(members.get(0));

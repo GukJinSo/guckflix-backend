@@ -77,7 +77,7 @@ class ActorServiceTest {
         ActorDto.Post form = new ActorDto.Post();
         form.setBirthDay(LocalDate.of(1994,11,26));
         form.setName("gukjin");
-        form.setOverview("1994년 대구에서 출생한 ....");
+        form.setBiography("1994년 대구에서 출생한 ....");
         form.setCredits(Arrays.asList(
                 new ActorDto.Post.ActorPostCredit(savedMovieId1, "수감자1"),
                 new ActorDto.Post.ActorPostCredit(savedMovieId2, "국장"),
@@ -87,7 +87,7 @@ class ActorServiceTest {
         ActorDto.Post form2 = new ActorDto.Post();
         form2.setBirthDay(LocalDate.of(1954,7,30));
         form2.setName("hwan");
-        form2.setOverview("1954년 서울에서 출생한 ....");
+        form2.setBiography("1954년 서울에서 출생한 ....");
         form2.setCredits(Arrays.asList(
                 new ActorDto.Post.ActorPostCredit(savedMovieId1, "수감자1")
         ));
@@ -115,7 +115,7 @@ class ActorServiceTest {
         ActorDto.Post form = new ActorDto.Post();
         form.setBirthDay(LocalDate.of(1994,11,26));
         form.setName("gukjin");
-        form.setOverview("1994년 대구에서 출생한 ....");
+        form.setBiography("1994년 대구에서 출생한 ....");
         form.setCredits(Arrays.asList(
                 new ActorDto.Post.ActorPostCredit(savedMovieId1, "수감자1"),
                 new ActorDto.Post.ActorPostCredit(savedMovieId2, "국장"),

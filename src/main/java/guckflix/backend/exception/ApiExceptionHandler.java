@@ -27,23 +27,23 @@ public class ApiExceptionHandler {
     private final MessageSource messageSource;
 
     @ExceptionHandler(value = NotFoundException.class)
-    public ResponseEntity<ErrorDto> notFound(NotFoundException e) {
+    public ResponseEntity<ResponseDto> notFound(NotFoundException e) {
         log.info("NotFoundException", e);
-        ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
+        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(value = NotAllowedIdException.class)
-    public ResponseEntity<ErrorDto> notAllowedId(NotAllowedIdException e) {
+    public ResponseEntity<ResponseDto> notAllowedId(NotAllowedIdException e) {
         log.info("NotAllowedIdException", e);
-        ErrorDto errorResponse = new ErrorDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
+        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(value = DuplicateException.class)
-    public ResponseEntity<ErrorDto> memberDuplicate(DuplicateException e) {
+    public ResponseEntity<ResponseDto> memberDuplicate(DuplicateException e) {
         log.info("DuplicateException", e);
-        ErrorDto errorResponse = new ErrorDto(HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT, e.getMessage());
+        ResponseDto errorResponse = new ResponseDto(HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 

@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class ErrorDto {
+public class ResponseDto<T> {
 
     @JsonProperty("status_code")
     private int statusCode;
@@ -14,9 +14,19 @@ public class ErrorDto {
 
     private String message;
 
-    public ErrorDto(int statusCode, HttpStatus status, String message) {
+    @JsonProperty("data")
+    private T bodyDto;
+
+    public ResponseDto(int statusCode, HttpStatus status, String message) {
         this.statusCode = statusCode;
         this.status = status;
         this.message = message;
+    }
+
+    public ResponseDto(int statusCode, HttpStatus status, String message, T bodyDto) {
+        this.statusCode = statusCode;
+        this.status = status;
+        this.message = message;
+        this.bodyDto = bodyDto;
     }
 }

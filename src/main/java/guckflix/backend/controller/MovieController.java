@@ -1,5 +1,6 @@
 package guckflix.backend.controller;
 
+import guckflix.backend.dto.ActorDto;
 import guckflix.backend.dto.ReviewDto.Post;
 import guckflix.backend.dto.ReviewDto.Response;
 import guckflix.backend.dto.paging.PagingRequest;
@@ -27,6 +28,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -185,7 +189,7 @@ public class MovieController {
                                 @RequestPart MultipartFile w500File,
                                 @RequestPart MultipartFile originFile,
                                 @RequestPart MovieDto.Update movieUpdateForm,
-                                @RequestPart CreditDto.Update creditUpdateForm){
+                                @RequestPart CreditDto.Patch creditPatchForm){
 
         MovieDto.Response dto = movieService.findById(movieId);
         String originUUID = UUID.randomUUID().toString()+".jpg";
@@ -193,7 +197,7 @@ public class MovieController {
         movieUpdateForm.setBackdropPath(originUUID);
         movieUpdateForm.setPosterPath(w500UUID);
 
-        movieService.update(creditUpdateForm, movieUpdateForm, movieId);
+//        movieService.update(creditPatchForm, movieUpdateForm, movieId);
         fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
         fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
         fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
@@ -205,7 +209,7 @@ public class MovieController {
     /**
      * 영화 삭제
      */
-    @DeleteMapping("/movies/{movieId}")
+    @DeleteMapping("/movies/{movieId}") 
     @ApiOperation(value = "영화 삭제", notes = "영화를 삭제하고 크레딧도 함께 삭제")
     public ResponseEntity delete(@PathVariable Long movieId){
         MovieDto.Response dto = movieService.findById(movieId);
@@ -217,16 +221,38 @@ public class MovieController {
     }
 
     /**
-     * 영화 크레딧 한 줄 삭제
+     * 영화 크레딧 추가
      */
-    @DeleteMapping("/movies/{movieId}/{creditId}")
-    @ApiOperation(value = "영화 크레딧 삭제", notes = "영화 수정 페이지에서 크레딧을 한 줄 삭제")
-    public ResponseEntity creditDelete(@PathVariable Long movieId,
-                                       @PathVariable Long creditId){
-        creditService.delete(creditId);
-        return new ResponseEntity(HttpStatus.OK);
+    @PostMapping("/movies/{movieId}/credits")
+    @ApiOperation(value = "영화 크레딧 추가", notes = "영화 크레딧 추가")
+    public ResponseEntity addCredit(@PathVariable Long movieId,
+                                    @RequestBody CreditDto.Post form) throws URISyntaxException {
+
+        ActorDto.Response.CreditWithMovieInfo response = creditService.addCredit(movieId, form);
+        return ResponseEntity.ok(response);
     }
 
+    /**
+     * 영화 크레딧 수정
+     */
+    @PatchMapping("/movies/{movieId}/credits/{creditId}")
+    @ApiOperation(value = "영화 크레딧 수정", notes = "영화 크레딧 수정")
+    public ResponseEntity patchCredit(@PathVariable Long movieId, @PathVariable Long creditId,
+                                      @RequestBody CreditDto.Patch creditPatchForm) {
 
+        creditService.updateCredit(movieId, creditId, creditPatchForm);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * 영화 크레딧 삭제
+     */
+    @DeleteMapping("/movies/{movieId}/credits/{creditId}")
+    @ApiOperation(value = "영화 크레딧 삭제", notes = "영화 크레딧 삭제")
+    public ResponseEntity deleteCredit(@PathVariable Long movieId,
+                                       @PathVariable Long creditId){
+        creditService.deleteCredit(movieId, creditId); ;
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
 }

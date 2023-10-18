@@ -1,5 +1,6 @@
 package guckflix.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,6 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -22,14 +22,14 @@ public class MemberDto {
     public static class Post{
 
         @NotBlank
-        @Length(min = 8, max = 20)
+        @Length(min = 4, max = 40)
         private String username;
 
         @NotBlank
-        @Length(min = 8, max = 20)
+        @Length(min = 8, max = 30)
         private String password;
 
-        @NotNull
+        @Length(max = 40)
         @NotBlank
         private String email;
 
@@ -38,13 +38,40 @@ public class MemberDto {
     @Getter
     @Setter
     @ToString
-    @ApiModel(value = "MemberDto-PasswordChangePatch")
-    public static class PasswordChangePatch {
+    @ApiModel(value = "MemberDto-LoginForm")
+    public static class LoginForm {
+
+        @NotBlank
+        @Length(min = 4, max = 40)
+        private String username;
+
+        @NotBlank
+        @Length(min = 8, max = 30)
+        private String password;
+
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    @ApiModel(value = "MemberDto-PasswordChangeForm")
+    public static class passwordChangeForm {
 
         @NotBlank
         @Length(min = 8, max = 20)
         private String password;
 
+    }
+
+    @Getter
+    @Setter
+    @ApiModel(value = "MemberDto-User")
+    public static class User{
+        private Long id;
+
+        public User(Long id) {
+            this.id = id;
+        }
     }
 
 }

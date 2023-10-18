@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 public class CreditDto {
 
     @Getter
@@ -46,62 +44,31 @@ public class CreditDto {
     @ApiModel(value = "CreditDto-Post")
     public static class Post {
 
-        private List<Form> formList;
+        @JsonProperty("actor_id")
+        private Long actorId;
 
-        @Getter
-        @Setter
-        @ApiModel(value = "CreditDto-Post-Form")
-        public static class Form{
-
-            @JsonProperty("actor_id")
-            private Long id;
-
-            private String name;
-
-            @JsonProperty("movie_id")
-            private Long movieId;
-
-            @JsonProperty("character")
-            private String casting;
-
-            private int order;
-
-        }
+        @JsonProperty("character")
+        private String casting;
 
     }
 
     @Getter
     @Setter
-    @ApiModel(value = "CreditDto-Update")
-    public static class Update {
+    @ApiModel(value = "CreditDto-Delete")
+    public static class Delete {
 
-        private List<Form> formList;
+        @JsonProperty("credit_id")
+        private Long id;
 
-        @Getter
-        @Setter
-        @ApiModel(value = "CreditDto-Update-Form")
-        public static class Form{
+    }
 
-            private Long id;
+    @Getter
+    @Setter
+    @ApiModel(value = "CreditDto-Patch")
+    public static class Patch {
 
-            @JsonProperty("actor_id")
-            private Long actorId;
-
-            @JsonProperty("movie_id")
-            private Long movieId;
-
-            @JsonProperty("character")
-            private String casting;
-
-            private int order;
-
-            public Form(Long actorId, Long movieId, String casting, int order) {
-                this.actorId = actorId;
-                this.movieId = movieId;
-                this.casting = casting;
-                this.order = order;
-            }
-        }
+        @JsonProperty("character")
+        private String casting;
 
     }
 

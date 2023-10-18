@@ -31,8 +31,7 @@ public class Credit {
     private Actor actor;
 
 
-    public void update(int order, String casting) {
-        this.order = order;
+    public void update(String casting) {
         this.casting = casting;
     }
 
@@ -41,7 +40,9 @@ public class Credit {
             this.movie.getCredits().remove(this);
         }
         this.movie = movie;
-        movie.getCredits().add(this);
+        if(movie != null){
+            movie.getCredits().add(this);
+        }
     }
 
     public void changeActor(Actor actor){
@@ -49,7 +50,12 @@ public class Credit {
             this.actor.getCredits().remove(this);
         }
         this.actor = actor;
-        actor.getCredits().add(this);
+        if(actor != null){
+            actor.getCredits().add(this);
+        }
+
     }
+
+
 
 }

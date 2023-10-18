@@ -5,6 +5,7 @@ import guckflix.backend.dto.CreditDto;
 import guckflix.backend.file.FileConst;
 import guckflix.backend.file.FileUploader;
 import guckflix.backend.service.ActorService;
+import guckflix.backend.service.CreditService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,9 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 @Slf4j
@@ -24,6 +28,8 @@ import java.util.UUID;
 public class ActorController {
 
     private final ActorService actorService;
+
+    private final CreditService creditService;
 
     private final FileUploader fileUploader;
 
@@ -58,21 +64,31 @@ public class ActorController {
     } 
 
     @PatchMapping("/actors/{actorId}")
-    @ApiOperation(value = "배우 수정", notes = "배우 정보와 이미지를 수정한다. 크레딧도 수정 가능")
+    @ApiOperation(value = "배우 기본정보 수정", notes = "배우 기본 정보를 수정한다")
     public ResponseEntity update(@PathVariable Long actorId,
-                                 @RequestPart ActorDto.Update actorUpdafeForm,
-                                 @RequestPart MultipartFile w500File,
-                                 @RequestPart CreditDto.Update creditUpdateForm) {
+                                 ActorDto.UpdateInfo actorUpdafeForm) {
+        actorService.updateInfo(actorId, actorUpdafeForm);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PatchMapping("/actors/{actorId}/photo")
+    @ApiOperation(value = "배우 사진 수정", notes = "배우 이미지를 수정한다")
+    public ResponseEntity update(@PathVariable Long actorId,
+                                 @RequestPart("imageFile") MultipartFile imageFile, HttpServletRequest request) throws URISyntaxException {
 
         ActorDto.Response findActor = actorService.findDetail(actorId);
 
         String profileUUID = UUID.randomUUID().toString()+ ".jpg";
-        actorUpdafeForm.setProfilePath(profileUUID);
-        actorService.update(actorId, actorUpdafeForm, creditUpdateForm);
         fileUploader.delete(FileConst.DIRECTORY_PROFILE, findActor.getProfilePath());
-        fileUploader.upload(w500File, FileConst.DIRECTORY_PROFILE, profileUUID);
-        
-        return new ResponseEntity(HttpStatus.OK);
+        fileUploader.upload(imageFile, FileConst.DIRECTORY_PROFILE, profileUUID);
+        actorService.updatePhoto(actorId, profileUUID);
+
+        String protocol = request.getScheme();
+        String host = request.getServerName();
+        int port = request.getServerPort();
+
+        URI location = new URI(protocol+"://"+host+":"+port+"/"+"images/"+FileConst.DIRECTORY_PROFILE+"/"+profileUUID);
+        return ResponseEntity.created(location).build();
     }
 
 }

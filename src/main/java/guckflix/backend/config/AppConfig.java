@@ -29,16 +29,26 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 이미지 캐시를 위한 ETag 설정
+     * 이미지 캐시를 위한 ETag 설정.
+     * 제대로 동작하지 않아 컨트롤러에서 e-tag를 생성하기로 함
      */
-    @Bean
-    public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
-        FilterRegistrationBean<ShallowEtagHeaderFilter> filterRegistrationBean
-                = new FilterRegistrationBean<>( new ShallowEtagHeaderFilter());
-        filterRegistrationBean.addUrlPatterns("/images/*");
-        filterRegistrationBean.setName("etagFilter");
-        return filterRegistrationBean;
-    }
+//    @Bean
+//    public FilterRegistrationBean<ShallowEtagHeaderFilter> shallowEtagHeaderFilter() {
+//        FilterRegistrationBean<ShallowEtagHeaderFilter> filterRegistrationBean
+//                = new FilterRegistrationBean<>( new ShallowEtagHeaderFilter());
+//        filterRegistrationBean.addUrlPatterns("/images/**");
+//        return filterRegistrationBean;
+//    }
+
+    /**
+     * 서버에서 eTag를 내려주지만
+     * Cache-Control이 no-cache, no-store, max-age=0, must-revalidate라서
+     * 요청 시 클라이언트가 If-None-Match를 전송하지 않음..
+     */
+//    @Bean
+//    public ShallowEtagHeaderFilter shallowEtagHeaderFilter() {
+//        return new ShallowEtagHeaderFilter();
+//    }
 
     /**
      * Spring Data Jpa의 Pageable 사용하는 것 대신 커스텀 페이징 객체 Resolver

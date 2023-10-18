@@ -40,6 +40,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         return null;
     }
 
+
     // 해당 user의 권한을 return
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,7 +48,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
         collect.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return String.valueOf(member.getRole());
+                return "ROLE_"+String.valueOf(member.getRole());
             }
         });
         return collect;

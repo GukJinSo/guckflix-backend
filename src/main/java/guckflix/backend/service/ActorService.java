@@ -101,41 +101,96 @@ public class ActorService {
     }
 
     @Transactional
-    public void update(Long actorId, ActorDto.Update actorUpdafeForm, CreditDto.Update creditUpdateForm) {
+    public void updateInfo(Long actorId, ActorDto.UpdateInfo actorUpdateForm) {
         Actor actor = actorRepository.findActorDetailById(actorId);
-        actor.updateDetail(actorUpdafeForm);
-
-        List<CreditDto.Update.Form> updateForms = creditUpdateForm.getFormList();
-
-        // ConcurrentModificationException 회피?
-        Iterator<Credit> iterator = actor.getCredits().iterator();
-        while (iterator.hasNext()) {
-            Credit credit = iterator.next();
-            iterator.remove();
-            creditRepository.remove(credit);
-        }
-
-        for (CreditDto.Update.Form updateForm : updateForms) {
-            Movie movie = movieRepository.findById(updateForm.getMovieId());
-
-            List<Credit> credits = movie.getCredits();
-
-            int maxOrder = 0;
-            for (Credit credit : credits) {
-                int order = credit.getOrder();
-                if (order > maxOrder) {
-                    maxOrder = order;
-                }
-            }
-
-            Credit newCredit = Credit.builder()
-                    .movie(movie)
-                    .order(maxOrder)
-                    .casting(updateForm.getCasting())
-                    .actor(actor)
-                    .build();
-
-            creditRepository.save(newCredit);
-        }
+        actor.updateInfo(actorUpdateForm);
     }
+
+    @Transactional
+    public void updatePhoto(Long actorId, String fileUUID) {
+        Actor actor = actorRepository.findActorDetailById(actorId);
+        actor.updatePhoto(fileUUID);
+    }
+
+
+
+
+
+
+//        Actor actor = actorRepository.findActorDetailById(actorId);
+//
+//        List<CreditDto.Update.Form> updateForms = creditUpdateForm.getFormList();
+//
+//        // 크레딧을 삭제하고 전부 새로 만들 것임
+//        // 그런데 for문을 돌면서 삭제하면 배열이 달라져서 안 됨. ConcurrentModificationException 회피
+//        Iterator<Credit> iterator = actor.getCredits().iterator();
+//        while (iterator.hasNext()) {
+//            Credit credit = iterator.next();
+//            iterator.remove();
+//            creditRepository.remove(credit);
+//        }
+//
+//        for (CreditDto.Update.Form updateForm : updateForms) {
+//            Movie movie = movieRepository.findById(updateForm.getMovieId());
+//
+//            List<Credit> credits = movie.getCredits();
+//
+//            int maxOrder = 0;
+//            for (Credit credit : credits) {
+//                int order = credit.getOrder();
+//                if (order > maxOrder) {
+//                    maxOrder = order;
+//                }
+//            }
+//
+//            Credit newCredit = Credit.builder()
+//                    .order(maxOrder)
+//                    .casting(updateForm.getCasting())
+//                    .build();
+//
+//            newCredit.changeActor(actor);
+//            newCredit.changeMovie(movie);
+//
+//            creditRepository.save(newCredit);
+//        }
+//    }
+
+//    @Transactional
+//    public void update(Long actorId, ActorDto.Update actorUpdafeForm, CreditDto.Update creditUpdateForm) {
+//        Actor actor = actorRepository.findActorDetailById(actorId);
+//        actor.updateDetail(actorUpdafeForm);
+//
+//        List<CreditDto.Update.Form> updateForms = creditUpdateForm.getFormList();
+//
+//        // ConcurrentModificationException 회피?
+//        Iterator<Credit> iterator = actor.getCredits().iterator();
+//        while (iterator.hasNext()) {
+//            Credit credit = iterator.next();
+//            iterator.remove();
+//            creditRepository.remove(credit);
+//        }
+//
+//        for (CreditDto.Update.Form updateForm : updateForms) {
+//            Movie movie = movieRepository.findById(updateForm.getMovieId());
+//
+//            List<Credit> credits = movie.getCredits();
+//
+//            int maxOrder = 0;
+//            for (Credit credit : credits) {
+//                int order = credit.getOrder();
+//                if (order > maxOrder) {
+//                    maxOrder = order;
+//                }
+//            }
+//
+//            Credit newCredit = Credit.builder()
+//                    .movie(movie)
+//                    .order(maxOrder)
+//                    .casting(updateForm.getCasting())
+//                    .actor(actor)
+//                    .build();
+//
+//            creditRepository.save(newCredit);
+//        }
+//    }
 }

@@ -1,7 +1,7 @@
-package guckflix.backend.security;
+package guckflix.backend.security.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guckflix.backend.exception.ErrorDto;
+import guckflix.backend.exception.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -24,7 +24,7 @@ public class ApiAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ObjectMapper objectMapper = new ObjectMapper();
-        ErrorDto fail = new ErrorDto(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, "You need to log in"); // Custom error response.
+        ResponseDto fail = new ResponseDto(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED, "You need to log in"); // Custom error response.
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         String json = objectMapper.writeValueAsString(fail);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

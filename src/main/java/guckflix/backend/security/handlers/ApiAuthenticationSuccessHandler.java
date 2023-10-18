@@ -1,7 +1,9 @@
-package guckflix.backend.security;
+package guckflix.backend.security.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guckflix.backend.exception.ErrorDto;
+import guckflix.backend.dto.MemberDto;
+import guckflix.backend.exception.ResponseDto;
+import guckflix.backend.security.authen.PrincipalDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -35,8 +37,11 @@ public class ApiAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
+        Long userId = ((PrincipalDetails) authentication.getPrincipal()).getMember().getId();
+
         ObjectMapper objectMapper = new ObjectMapper();
-        ErrorDto success = new ErrorDto(HttpStatus.OK.value(), HttpStatus.OK, "Login OK");
+        ResponseDto success = new ResponseDto(HttpStatus.OK.value(), HttpStatus.OK, "Login OK", new MemberDto.User(userId));
         response.setStatus(HttpStatus.OK.value());
         String json = objectMapper.writeValueAsString(success);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

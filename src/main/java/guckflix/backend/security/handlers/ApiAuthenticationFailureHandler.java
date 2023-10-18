@@ -1,7 +1,7 @@
-package guckflix.backend.security;
+package guckflix.backend.security.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guckflix.backend.exception.ErrorDto;
+import guckflix.backend.exception.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -27,9 +27,10 @@ public class ApiAuthenticationFailureHandler implements AuthenticationFailureHan
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
         ObjectMapper objectMapper = new ObjectMapper();
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        ErrorDto fail = new ErrorDto(status.value(), status, "로그인에 실패하였습니다");
+        ResponseDto fail = new ResponseDto(status.value(), status, "로그인에 실패하였습니다");
         response.setStatus(status.value());
         response.setCharacterEncoding("UTF-8");
         String json = objectMapper.writeValueAsString(fail);

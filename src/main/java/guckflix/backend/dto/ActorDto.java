@@ -83,7 +83,7 @@ public class ActorDto {
         @JsonProperty("birth_day")
         private LocalDate birthDay;
 
-        private List<ActorResponseCredit> credits;
+        private List<CreditWithMovieInfo> credits;
 
         public Response (Actor actorDetail) {
             this.id = actorDetail.getId();
@@ -91,10 +91,12 @@ public class ActorDto {
             this.profilePath = actorDetail.getProfilePath();
             this.biography = actorDetail.getBiography();
             this.birthDay = actorDetail.getBirthDay();
+            this.placeOfBirth = actorDetail.getPlaceOfBirth();
+            this.deathDay = actorDetail.getDeathDay();
 
-            List<ActorResponseCredit> creditDto = new ArrayList<>();
+            List<CreditWithMovieInfo> creditDto = new ArrayList<>();
             for (Credit credit : actorDetail.getCredits()) {
-                creditDto.add(new ActorResponseCredit(credit));
+                creditDto.add(new CreditWithMovieInfo(credit));
             }
             this.credits = creditDto;
         }
@@ -103,7 +105,7 @@ public class ActorDto {
         @Setter
         @NoArgsConstructor
         @ToString
-        public static class ActorResponseCredit {
+        public static class CreditWithMovieInfo {
 
             @JsonProperty("credit_id")
             private Long creditId;
@@ -117,15 +119,19 @@ public class ActorDto {
             @JsonProperty("poster_path")
             private String posterPath;
 
+            @JsonProperty("release_date")
+            private LocalDate releaseDate;
+
             private String title;
 
             private int order;
 
-            public ActorResponseCredit(Credit entity) {
+            public CreditWithMovieInfo(Credit entity) {
                 this.title = entity.getMovie().getTitle();
                 this.movieId = entity.getMovie().getId();
                 this.casting = entity.getCasting();
                 this.posterPath = entity.getMovie().getPosterPath();
+                this.releaseDate = entity.getMovie().getReleaseDate();
                 this.order = entity.getOrder();
                 this.creditId = entity.getId();
             }
@@ -137,7 +143,7 @@ public class ActorDto {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Update {
+    public static class UpdateInfo {
 
         private String name;
 
@@ -156,4 +162,16 @@ public class ActorDto {
         private String placeOfBirth;
 
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdatePicture {
+
+        @JsonProperty("profile_path")
+        private String profilePath;
+
+    }
+
 }
