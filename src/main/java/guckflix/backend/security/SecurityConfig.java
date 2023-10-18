@@ -109,7 +109,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:3000/"); // 로컬 리액트 서버 허용
         config.addAllowedOrigin("https://www.guckflix.site");
         config.addAllowedOrigin("https://guckflix.site");
-        config.addAllowedOrigin("https://guckflix.github.io");
+        config.addAllowedOrigin("https://gukjinso.github.io/");
         config.addAllowedMethod("*"); // 모든 메서드 허용
         config.addAllowedHeader("*");
         config.addExposedHeader("location");
