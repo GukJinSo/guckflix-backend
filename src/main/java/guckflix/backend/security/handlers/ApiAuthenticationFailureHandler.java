@@ -2,6 +2,7 @@ package guckflix.backend.security.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guckflix.backend.exception.ResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -23,10 +24,13 @@ import java.io.PrintWriter;
  }
  */
 @Component
+@Slf4j
 public class ApiAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
+        log.error("인증 실패: " + exception.getMessage());
 
         ObjectMapper objectMapper = new ObjectMapper();
         HttpStatus status = HttpStatus.BAD_REQUEST;

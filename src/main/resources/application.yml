@@ -34,6 +34,5 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 logging.level:
-  root: warn
-  org.hibernate.SQL: debug
-  # org.hibernate.type: trace
+  root: info
+  org.hibernate.SQL: info

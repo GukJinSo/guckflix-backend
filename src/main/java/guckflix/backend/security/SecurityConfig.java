@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .failureHandler(authenticationFailureHandler);
         http.oauth2Login()
                 .successHandler(authenticationSuccessHandler)
-                .defaultSuccessUrl("http://localhost:3000")
+                .defaultSuccessUrl(System.getenv("URL_DEFAULT"))
                 .failureHandler(authenticationFailureHandler)
                 .userInfoEndpoint()
                 .userService(oauth2UserService);// 구글 로그인 완료 처리할 서비스
@@ -106,10 +106,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // 내 서버가 응답 시 자격인증을 받아들일 지 설정
-        config.addAllowedOrigin("http://localhost:3000/"); // 로컬 리액트 서버 허용
-        config.addAllowedOrigin("https://www.guckflix.site");
-        config.addAllowedOrigin("https://guckflix.site");
-        config.addAllowedOrigin("https://gukjinso.github.io/");
+        config.addAllowedOrigin(System.getenv("URL_DEFAULT"));
         config.addAllowedMethod("*"); // 모든 메서드 허용
         config.addAllowedHeader("*");
         config.addExposedHeader("location");
