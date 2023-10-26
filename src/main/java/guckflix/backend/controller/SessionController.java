@@ -32,6 +32,7 @@ public class SessionController {
         String jsessionIdFromCookie = null;
         Authentication authentication = null;
         Long userId = null;
+        String role = null;
 
         // 세션이 있으면
         if (session != null) {
@@ -44,12 +45,13 @@ public class SessionController {
             // 스프링 시큐리티 인증 확인
             authentication = SecurityContextHolder.getContext().getAuthentication();
             userId = ((PrincipalDetails) authentication.getPrincipal()).getMember().getId();
+            role = ((PrincipalDetails) authentication.getPrincipal()).getMember().getRole().toString();
 
             if (authentication != null && authentication.isAuthenticated()) {
 
                 // 이용자가 전송한 JSESSIONID가 세션 값과 일치하는 경우
                 if (jsessionIdFromCookie.equals(session.getId())) {
-                    return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK.value(), HttpStatus.OK, "유효 세션 성공", new MemberDto.User(userId)));
+                    return ResponseEntity.ok().body(new ResponseDto(HttpStatus.OK.value(), HttpStatus.OK, "유효 세션 성공", new MemberDto.User(userId, role)));
                 }
             }
         }
@@ -58,18 +60,4 @@ public class SessionController {
 
     }
 
-    // 세션이 invalid 하면 세션을 삭제하고 메세지를 리턴. 프론트에서는 다시 로그인 필요해짐
-    //    @GetMapping("/invalid")
-//    public ResponseEntity invalidSession(HttpServletRequest req, HttpServletResponse resp) {
-//
-//        HttpSession session = req.getSession(true);
-//        session.invalidate();
-//
-//        Cookie cookie = new Cookie("JSESSIONID", null);
-//        cookie.setMaxAge(100);
-//        resp.addCookie(cookie);
-//
-//        return ResponseEntity.badRequest().body(new ResponseDto(400, HttpStatus.BAD_REQUEST, "유효하지 않은 세션 ID"));
-//
-//    }
 }

@@ -2,6 +2,9 @@ package guckflix.backend.controller;
 
 import guckflix.backend.dto.ActorDto;
 import guckflix.backend.dto.CreditDto;
+import guckflix.backend.dto.MovieDto;
+import guckflix.backend.dto.paging.PagingRequest;
+import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.file.FileConst;
 import guckflix.backend.file.FileUploader;
 import guckflix.backend.service.ActorService;
@@ -38,6 +41,24 @@ public class ActorController {
     public ResponseEntity<ActorDto.Response> getActor(@PathVariable Long actorId) {
         return ResponseEntity.ok(actorService.findDetail(actorId));
     }
+
+//    /**
+//     * 영화 검색
+//     */
+//    @GetMapping("/movies/search")
+//    @ApiOperation(value = "영화 검색", notes = "키워드로 영화 조회")
+//    public ResponseEntity<Slice> search(@RequestParam String keyword, PagingRequest pagingRequest) {
+//        Slice<MovieDto.Response> movies = movieService.findByKeyword(keyword, pagingRequest);
+//        return ResponseEntity.ok().body(movies);
+//    }
+
+    @GetMapping("/actors/search")
+    @ApiOperation(value = "배우 검색", notes = "배우를 조회한다")
+    public ResponseEntity<Slice> search(@RequestParam String keyword, PagingRequest paging) {
+        Slice<ActorDto.Response> actors = actorService.findActorsByKeyword(keyword, paging);
+        return ResponseEntity.ok().body(actors);
+    }
+
 
     @PostMapping("/actors")
     @ApiOperation(value = "배우 등록", notes = "배우를 등록한다")

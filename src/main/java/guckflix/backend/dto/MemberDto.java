@@ -68,9 +68,11 @@ public class MemberDto {
     @ApiModel(value = "MemberDto-User")
     public static class User{
         private Long id;
+        private String role;
 
-        public User(Long id) {
+        public User(Long id, String role) {
             this.id = id;
+            this.role = role;
         }
     }
 

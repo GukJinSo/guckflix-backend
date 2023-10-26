@@ -39,9 +39,10 @@ public class ApiAuthenticationSuccessHandler implements AuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         Long userId = ((PrincipalDetails) authentication.getPrincipal()).getMember().getId();
+        String role = ((PrincipalDetails) authentication.getPrincipal()).getMember().getRole().toString();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        ResponseDto success = new ResponseDto(HttpStatus.OK.value(), HttpStatus.OK, "Login OK", new MemberDto.User(userId));
+        ResponseDto success = new ResponseDto(HttpStatus.OK.value(), HttpStatus.OK, "Login OK", new MemberDto.User(userId, role));
         response.setStatus(HttpStatus.OK.value());
         String json = objectMapper.writeValueAsString(success);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

@@ -3,8 +3,15 @@ package guckflix.backend.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.entity.Credit;
 import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class CreditDto {
 
@@ -42,11 +49,16 @@ public class CreditDto {
     @Getter
     @Setter
     @ApiModel(value = "CreditDto-Post")
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Post {
 
+        @NotNull
         @JsonProperty("actor_id")
         private Long actorId;
 
+        @NotEmpty
+        @Length(min = 1, max = 30)
         @JsonProperty("character")
         private String casting;
 

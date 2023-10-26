@@ -3,6 +3,9 @@ package guckflix.backend.service;
 import guckflix.backend.dto.ActorDto;
 import guckflix.backend.dto.ActorDto.Response;
 import guckflix.backend.dto.CreditDto;
+import guckflix.backend.dto.MovieDto;
+import guckflix.backend.dto.paging.PagingRequest;
+import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.entity.Actor;
 import guckflix.backend.entity.Credit;
 import guckflix.backend.entity.Movie;
@@ -112,9 +115,15 @@ public class ActorService {
         actor.updatePhoto(fileUUID);
     }
 
+    public Slice<Response> findActorsByKeyword(String keyword, PagingRequest paging) {
 
+        Slice<Actor> searched = actorRepository.findByKeyword(keyword, paging);
 
-
+        // 서비스 단에서 dto로 반환해서 나감
+        List<ActorDto.Response> dtos = searched.getList().stream()
+                .map((entity) -> new ActorDto.Response(entity)).collect(Collectors.toList());
+        return searched.convert(dtos);
+    }
 
 
 //        Actor actor = actorRepository.findActorDetailById(actorId);

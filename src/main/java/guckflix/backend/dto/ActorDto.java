@@ -163,15 +163,4 @@ public class ActorDto {
 
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdatePicture {
-
-        @JsonProperty("profile_path")
-        private String profilePath;
-
-    }
-
 }

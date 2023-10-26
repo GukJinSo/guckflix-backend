@@ -1,6 +1,7 @@
 package guckflix.backend.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guckflix.backend.dto.CreditDto;
 import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
 import org.assertj.core.api.Assertions;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,7 +37,7 @@ public class FileUploaderTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser
+    @WithMockUser(roles = {"ADMIN"})
     public void testFormDataWithImage() throws Exception {
 
         MovieDto.Post postForm = new MovieDto.Post();
@@ -43,6 +45,7 @@ public class FileUploaderTest {
         postForm.setOverview("This is a test movie");
         postForm.setGenres(Arrays.asList(new GenreDto(1L, "Action"), new GenreDto(2L, "Action")));
         postForm.setReleaseDate(LocalDate.now());
+        postForm.setCredits(List.of(new CreditDto.Post(1L, "Test casting")));
         String dtoJson = objectMapper.writeValueAsString(postForm);
 
         // Multipart 데이터 생성

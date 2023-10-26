@@ -28,7 +28,7 @@ public class Slice<T> {
     }
 
     /**
-     * 서비스 단에서 Slice<Entity> -> Slice<Dto>로 안의 제네릭 내용물만 갈아끼우는 경우 사용
+     * 서비스 단에서 Slice 제네릭 엔티티 <-> Slice 제네릭 Dto 처럼 안의 리스트 내용물만 갈아끼우는 경우 사용
      */
     public <C> Slice<C> convert(List<C> list){
         return new Slice<>(

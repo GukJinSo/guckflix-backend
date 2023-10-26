@@ -1,5 +1,6 @@
 package guckflix.backend.controller;
 
+import guckflix.backend.exception.NotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -61,12 +63,14 @@ public class ImageController {
      * 응답 헤더에서 다음과 같이 따옴표가 들어가는 형식 : Etag : "836901692966263412"
      * https://www.baeldung.com/etags-for-rest-with-spring
      */
-    private String generateETag(Resource resource) {
+    private String generateETag(Resource resource){
         try {
             long contentLength = resource.contentLength(); // 리소스 길이
             long lastModified = resource.lastModified(); // 리소스 마지막 수정일
             String fileName = resource.getFilename();
             return "\"" +contentLength+lastModified+fileName+"\"";
+        } catch (FileNotFoundException e) {
+            throw new NotFoundException("File Not Exist", e);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

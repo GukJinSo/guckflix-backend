@@ -29,7 +29,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<ResponseDto> notFound(NotFoundException e) {
         log.info("NotFoundException", e);
-        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
+        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.NOT_FOUND, e.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 

@@ -59,7 +59,7 @@ public class GenreCached {
     @JsonIgnore
     public static String genreListToString(List<GenreDto> genreDtos){
 
-        if(genres == null || genres.size() == 0) {
+        if(genreDtos == null || genreDtos.size() == 0) {
             return null;
         }
 

@@ -1,12 +1,10 @@
 package guckflix.backend.controller;
 
-import guckflix.backend.dto.ActorDto;
+import guckflix.backend.config.GenreCached;
+import guckflix.backend.dto.*;
 import guckflix.backend.dto.ReviewDto.Post;
 import guckflix.backend.dto.ReviewDto.Response;
 import guckflix.backend.dto.paging.PagingRequest;
-import guckflix.backend.dto.CreditDto;
-import guckflix.backend.dto.MovieDto;
-import guckflix.backend.dto.VideoDto;
 import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.wrapper.ResponseWrapper;
@@ -29,11 +27,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Api(tags = {"영화 API"})
@@ -161,22 +160,23 @@ public class MovieController {
      * 영화 등록
      */
     @ApiOperation(value = "영화 등록", notes = "영화 프로필 등록")
-    @PostMapping(value = "/movies", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity post(@RequestPart MovieDto.Post form,
+    @PostMapping(value = "/movies")
+    public ResponseEntity post(@Valid @RequestPart MovieDto.Post form,
                                @RequestPart MultipartFile originFile,
-                               @RequestPart MultipartFile w500File){
+                               @RequestPart MultipartFile w500File, HttpServletRequest request) throws URISyntaxException {
 
         String originUUID = UUID.randomUUID().toString() + ".jpg";
         String w500UUID = UUID.randomUUID().toString() + ".jpg";
         form.setBackdropPath(originUUID);
         form.setPosterPath(w500UUID);
 
-        movieService.save(form);
+        Long savedId = movieService.save(form);
 
         fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
         fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
 
-        return new ResponseEntity(HttpStatus.CREATED);
+        URI location = new URI("/movies/"+savedId);
+        return ResponseEntity.created(location).build();
     };
 
     /**
@@ -253,6 +253,17 @@ public class MovieController {
                                        @PathVariable Long creditId){
         creditService.deleteCredit(movieId, creditId); ;
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * 영화 장르 조회
+     */
+    @GetMapping("/genres")
+    @ApiOperation(value = "영화 장르 조회", notes = "어플리케이션에 캐시된 영화 장르 조회")
+    public ResponseEntity getGenres(){
+        Map<Long, String> genreMap = GenreCached.getGenres();
+        List<GenreDto> genres = genreMap.entrySet().stream().map((entry) -> new GenreDto(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        return ResponseEntity.ok().body(genres);
     }
 
 }
