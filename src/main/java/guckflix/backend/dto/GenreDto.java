@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class GenreDto {
 
-    @Valid
     @NotNull
     private Long id;
 

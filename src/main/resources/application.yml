@@ -33,6 +33,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  messages:
+    basename: errors
 logging.level:
   root: info
   org.hibernate.SQL: info

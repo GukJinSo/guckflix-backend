@@ -2,18 +2,18 @@ package guckflix.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import guckflix.backend.annotation.DateRange;
 import guckflix.backend.config.GenreCached;
 import guckflix.backend.entity.Movie;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -27,18 +27,21 @@ public class MovieDto {
     public static class Post {
 
         @NotBlank
+        @Length(max = 100)
         private String title;
 
         @NotBlank
+        @Length(max = 1000)
         private String overview;
 
         @Valid
         @NotNull
-        @Size(min = 1)
+        @Size(min = 1, max = 10)
         private List<GenreDto> genres;
 
         @NotNull
         @DateTimeFormat(pattern = "yyyy-MM-dd")
+        @DateRange(minYear = 1900, daysFromToday = 30)
         @JsonProperty("release_date")
         private LocalDate releaseDate;
 
