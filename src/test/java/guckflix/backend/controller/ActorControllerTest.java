@@ -1,6 +1,8 @@
 package guckflix.backend.controller;
 
 import guckflix.backend.dto.ActorDto;
+import guckflix.backend.dto.CreditDto;
+import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.service.ActorService;
 import guckflix.backend.service.MovieService;
@@ -17,7 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,33 +41,19 @@ class ActorControllerTest {
     @BeforeEach
     private void before(){
 
+        ActorDto.Post actorPost = new ActorDto.Post();
+        actorPost.setName("국진");
+        actorPost.setCredits(new ArrayList<>());
+        savedId = actorService.save(actorPost);
+
         MovieDto.Post movie = new MovieDto.Post();
         movie.setTitle("쇼생크탈출");
         movie.setOverview("감옥에 억울하게 ...");
         movie.setReleaseDate(LocalDate.of(1945,11,26));
-        MovieDto.Post movie2 = new MovieDto.Post();
-        movie2.setTitle("어벤저스");
-        movie2.setOverview("히어로들이 ...");
-        movie2.setReleaseDate(LocalDate.of(2021,11,26));
-        MovieDto.Post movie3 = new MovieDto.Post();
-        movie3.setTitle("대부");
-        movie3.setOverview("신참 마피아 ...");
-        movie3.setReleaseDate(LocalDate.of(1966,11,26));
+        movie.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movie.setCredits(List.of(new CreditDto.Post(savedId, "수감자")));
 
         movieService.save(movie);
-        movieService.save(movie2);
-        movieService.save(movie3);
-
-        ActorDto.Post form = new ActorDto.Post();
-        form.setBirthDay(LocalDate.of(1994,11,26));
-        form.setName("gukjin");
-        form.setBiography("1994년 대구에서 출생한 ....");
-        form.setCredits(Arrays.asList(
-                new ActorDto.Post.ActorPostCredit(1L, "수감자1"),
-                new ActorDto.Post.ActorPostCredit(2L, "국장"),
-                new ActorDto.Post.ActorPostCredit(3L, "주인공")
-        ));
-        savedId = actorService.save(form);
 
     }
 
@@ -76,7 +66,7 @@ class ActorControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(savedId))
-                .andExpect(jsonPath("$.name").value("gukjin"));
+                .andExpect(jsonPath("$.name").value("국진"));
 
     }
 }

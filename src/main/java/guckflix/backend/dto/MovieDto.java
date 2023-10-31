@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guckflix.backend.annotation.DateRange;
 import guckflix.backend.config.GenreCached;
 import guckflix.backend.entity.Movie;
+import guckflix.backend.entity.MovieGenre;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -91,7 +92,14 @@ public class MovieDto {
         @JsonIgnore
         public Response(Movie entity){
             this.setId(entity.getId());
-            this.setGenres(GenreCached.genreStringToList(entity.getGenres()));
+
+            List<MovieGenre> movieGenres = entity.getMovieGenres();
+            List<GenreDto> genreDtos = new ArrayList<>();
+            for (MovieGenre movieGenre : movieGenres) {
+                genreDtos.add(new GenreDto(movieGenre.getGenre().getId(), movieGenre.getGenre().getGenreName()));
+            }
+
+            this.setGenres(genreDtos);
             this.setOverview(entity.getOverview());
             this.setPopularity(entity.getPopularity());
             this.setTitle(entity.getTitle());

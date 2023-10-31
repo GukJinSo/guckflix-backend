@@ -1,6 +1,7 @@
 package guckflix.backend.service;
 
 import guckflix.backend.config.GenreCached;
+import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.ReviewDto;
 import guckflix.backend.entity.Genre;
@@ -36,7 +37,10 @@ class ReviewServiceTest {
     public void review_add() throws Exception{
         MovieDto.Post movieDto = new MovieDto.Post();
         movieDto.setTitle("test");
-        movieDto.setReleaseDate(LocalDate.parse("2022-11-23"));
+        movieDto.setReleaseDate(LocalDate.parse("2023-11-23"));
+        movieDto.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movieDto.setCredits(new ArrayList<>());
+
         Long savedMovieId = movieService.save(movieDto);
 
         ReviewDto.Post reviewDto = new ReviewDto.Post();
@@ -66,6 +70,8 @@ class ReviewServiceTest {
 
         MovieDto.Post movieDto = new MovieDto.Post();
         movieDto.setTitle("test");
+        movieDto.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movieDto.setCredits(new ArrayList<>());
         Long savedMovieId = movieService.save(movieDto);
 
         ReviewDto.Post reviewDto = new ReviewDto.Post();
@@ -100,6 +106,8 @@ class ReviewServiceTest {
 
         MovieDto.Post movieDto = new MovieDto.Post();
         movieDto.setTitle("test");
+        movieDto.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movieDto.setCredits(new ArrayList<>());
         Long savedMovieId = movieService.save(movieDto);
 
         ReviewDto.Post reviewDto = new ReviewDto.Post();

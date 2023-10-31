@@ -1,8 +1,11 @@
 package guckflix.backend.service;
 
 import guckflix.backend.dto.ActorDto;
+import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
+import guckflix.backend.entity.Genre;
 import guckflix.backend.exception.NotFoundException;
+import guckflix.backend.repository.GenreRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +31,9 @@ class ActorServiceTest {
 
     @Autowired ActorService actorService;
     @Autowired MovieService movieService;
+
+    @Autowired
+    GenreRepository genreRepository;
 
     @Autowired
     EntityManager entityManager;
@@ -44,18 +51,27 @@ class ActorServiceTest {
         movie.setTitle("쇼생크탈출");
         movie.setOverview("감옥에 억울하게 ...");
         movie.setReleaseDate(LocalDate.of(1945,11,26));
+        movie.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movie.setCredits(new ArrayList<>());
         MovieDto.Post movie2 = new MovieDto.Post();
         movie2.setTitle("어벤저스");
         movie2.setOverview("히어로들이 ...");
         movie2.setReleaseDate(LocalDate.of(2021,11,26));
+        movie2.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movie2.setCredits(new ArrayList<>());
         MovieDto.Post movie3 = new MovieDto.Post();
         movie3.setTitle("대부");
         movie3.setOverview("신참 마피아 ...");
         movie3.setReleaseDate(LocalDate.of(1966,11,26));
+        movie3.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movie3.setCredits(new ArrayList<>());
         MovieDto.Post movie4 = new MovieDto.Post();
         movie4.setTitle("이퀼리브리엄");
         movie4.setOverview("불법 색출 ...");
         movie4.setReleaseDate(LocalDate.of(2006,5,26));
+        movie4.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movie4.setCredits(new ArrayList<>());
+
 
         savedMovieId1 = movieService.save(movie);
         savedMovieId2 = movieService.save(movie2);

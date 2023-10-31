@@ -30,7 +30,6 @@ public class BindErrorDetail {
         this.field = "Overall";
     }
 
-
     @JsonIgnore
     public static BindErrorDetail createFieldError(FieldError error, MessageSource messageSource, Locale locale) {
         return new BindErrorDetail(

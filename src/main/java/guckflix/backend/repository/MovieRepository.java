@@ -6,6 +6,7 @@ import guckflix.backend.dto.paging.PagingRequest;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.entity.Movie;
+import guckflix.backend.entity.MovieGenre;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -91,25 +92,26 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
         return new Slice<>(hasNext, pagingRequest.getRequestPage(), list, pagingRequest.getLimit());
     }
 
-    public Paging<Movie> findSimilarByGenres(Long id, List<String> genres, PagingRequest pagingRequest) {
+    public Paging<Movie> findSimilarByGenres(Long id, List<MovieGenre> movieGenres, PagingRequest pagingRequest) {
 
-        BooleanBuilder genreCond = new BooleanBuilder();
-        for (String genre : genres) {
-            genreCond.or(movie.genres.contains(genre));
-        }
-
-        List<Movie> list = queryFactory.select(movie)
-                .from(movie)
-                .orderBy(movie.popularity.desc())
-                .where(genreCond.andNot(movie.id.eq(id)))
-                .offset(pagingRequest.getOffset())
-                .limit(pagingRequest.getLimit())
-                .fetch();
-
-
-        int totalCount = selectCountAll().intValue();
-        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
-        return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
+        return null;
+//        BooleanBuilder genreCond = new BooleanBuilder();
+//        for (String genre : genres) {
+//            genreCond.or(movie.genres.contains(genre));
+//        }
+//
+//        List<Movie> list = queryFactory.select(movie)
+//                .from(movie)
+//                .orderBy(movie.popularity.desc())
+//                .where(genreCond.andNot(movie.id.eq(id)))
+//                .offset(pagingRequest.getOffset())
+//                .limit(pagingRequest.getLimit())
+//                .fetch();
+//
+//
+//        int totalCount = selectCountAll().intValue();
+//        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
+//        return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
 
     }
 

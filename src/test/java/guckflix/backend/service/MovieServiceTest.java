@@ -4,12 +4,12 @@ import guckflix.backend.config.GenreCached;
 import guckflix.backend.dto.CreditDto;
 import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
-import guckflix.backend.entity.Actor;
-import guckflix.backend.entity.Credit;
-import guckflix.backend.entity.Movie;
+import guckflix.backend.entity.*;
 import guckflix.backend.repository.ActorRepository;
 import guckflix.backend.repository.CreditRepository;
+import guckflix.backend.repository.GenreRepository;
 import guckflix.backend.repository.MovieRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +42,9 @@ class MovieServiceTest {
 
     @Autowired CreditRepository creditRepository;
 
+    @Autowired
+    GenreRepository genreRepository;
+
 
     @Test
     @Transactional
@@ -51,14 +54,27 @@ class MovieServiceTest {
         Actor actor2 = Actor.builder().name("박씨").biography("못생겼다").credits(new ArrayList<>()).build();
         Actor actor3 = Actor.builder().name("황씨").biography("그럭저럭 생겼다").credits(new ArrayList<>()).build();
 
+        GenreDto dto = new GenreDto(1L, "Action");
+
+        List<Genre> genres = genreRepository.findAll();
+        List<MovieGenre> movieGenres = new ArrayList<>();
+
         Movie movie = Movie.builder().title("Test Movie")
                 .overview("테스트 영화")
-                .genres(GenreCached.genreListToString(Arrays.asList(new GenreDto(1L, "Test Genre"))))
+                .movieGenres(movieGenres)
                 .backdropPath("uuid1.jpg")
                 .posterPath("uuid2.jpg")
                 .credits(new ArrayList<>())
                 .releaseDate(LocalDate.now())
                 .build();
+
+        for (Genre genre : genres) {
+            if(genre.getGenreName().equals(dto.getGenre()) && genre.getId().equals(dto.getId())){
+                MovieGenre movieGenre = MovieGenre.builder().genre(genre).movie(null).build();
+                movieGenre.changeMovie(movie);
+                movieGenres.add(movieGenre);
+            }
+        }
 
         Credit credit = Credit.builder()
                 .movie(movie)
@@ -108,13 +124,15 @@ class MovieServiceTest {
         Actor actor1 = Actor.builder().name("김씨").biography("잘생겼다").credits(new ArrayList<>()).build();
         Actor actor2 = Actor.builder().name("박씨").biography("못생겼다").credits(new ArrayList<>()).build();
 
-        actorRepository.save(actor1);
-        actorRepository.save(actor2);
+        Long savedActor1Id = actorRepository.save(actor1);
+        Long savedActor2Id = actorRepository.save(actor2);
 
         MovieDto.Post movieDto = new MovieDto.Post();
         movieDto.setTitle("테스트 영화");
         movieDto.setOverview("재미있음");
         movieDto.setGenres(Arrays.asList(new GenreDto(1L, "Adventure")));
+        movieDto.setCredits(new ArrayList<>(List.of(new CreditDto.Post(savedActor1Id, "김"))));
+        movieDto.setCredits(new ArrayList<>(List.of(new CreditDto.Post(savedActor2Id, "박"))));
 
         Long savedId = movieService.save(movieDto);
         Movie movie = movieRepository.findById(savedId);

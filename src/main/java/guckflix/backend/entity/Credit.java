@@ -50,7 +50,7 @@ public class Credit {
             this.actor.getCredits().remove(this);
         }
         this.actor = actor;
-        if(actor != null){
+        if(actor.getCredits() != null){
             actor.getCredits().add(this);
         }
 

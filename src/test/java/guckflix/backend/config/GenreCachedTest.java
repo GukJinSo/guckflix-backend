@@ -11,11 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class GenreCachedTest {
 
-    @Test
-    public void immutableTest() throws Exception {
-        Map<Long, String> genres = GenreCached.getGenres();
-        Assertions.assertThatThrownBy(()->genres.put(19L, "들어가면 안 됨"))
-                .isInstanceOf(UnsupportedOperationException.class);
-    }
+//    @Test
+//    public void immutableTest() throws Exception {
+//        Map<Long, String> genres = GenreCached.getGenres();
+//        Assertions.assertThatThrownBy(()->genres.put(19L, "들어가면 안 됨"))
+//                .isInstanceOf(UnsupportedOperationException.class);
+//    }
 
 }

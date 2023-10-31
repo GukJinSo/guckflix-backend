@@ -25,14 +25,14 @@ class MovieRepositoryTest {
     @Test
     @DisplayName("리포지토리 findById 테스트")
     public void findById(){
-        movieRepository.save(
+        Long savedId = movieRepository.save(
                 Movie.builder()
                         .title("테스트")
                         .build()
         );
         em.flush();
         em.clear();
-        assertThat(movieRepository.findById(1L).getTitle()).isEqualTo("테스트");
+        assertThat(movieRepository.findById(savedId).getTitle()).isEqualTo("테스트");
     }
 
 

@@ -1,6 +1,5 @@
 package guckflix.backend.entity;
 
-import guckflix.backend.config.GenreCached;
 import guckflix.backend.dto.MovieDto;
 import lombok.*;
 
@@ -26,7 +25,8 @@ public class Movie {
 
     private LocalDate releaseDate;
 
-    private String genres;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<MovieGenre> movieGenres = new ArrayList<>();
 
     private float popularity;
 
@@ -57,7 +57,6 @@ public class Movie {
     public void updateDetail(MovieDto.Update form) {
         this.title = form.getTitle();
         this.backdropPath = form.getBackdropPath();
-        this.genres = GenreCached.genreListToString(form.getGenres());
         this.overview = form.getOverview();
         this.releaseDate = form.getReleaseDate();
     }

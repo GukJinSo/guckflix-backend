@@ -8,8 +8,10 @@ import guckflix.backend.dto.paging.PagingRequest;
 import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.wrapper.ResponseWrapper;
+import guckflix.backend.entity.Genre;
 import guckflix.backend.file.FileConst;
 import guckflix.backend.file.FileUploader;
+import guckflix.backend.repository.GenreRepository;
 import guckflix.backend.security.authen.PrincipalDetails;
 import guckflix.backend.service.CreditService;
 import guckflix.backend.service.MovieService;
@@ -20,14 +22,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -261,9 +261,7 @@ public class MovieController {
     @GetMapping("/genres")
     @ApiOperation(value = "영화 장르 조회", notes = "어플리케이션에 캐시된 영화 장르 조회")
     public ResponseEntity getGenres(){
-        Map<Long, String> genreMap = GenreCached.getGenres();
-        List<GenreDto> genres = genreMap.entrySet().stream().map((entry) -> new GenreDto(entry.getKey(), entry.getValue())).collect(Collectors.toList());
-        return ResponseEntity.ok().body(genres);
+        return ResponseEntity.ok().body(GenreCached.getGenresByDtos());
     }
 
 }

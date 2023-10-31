@@ -2,17 +2,17 @@ package guckflix.backend.service;
 
 import guckflix.backend.config.GenreCached;
 import guckflix.backend.dto.CreditDto;
+import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
 import guckflix.backend.dto.MovieDto.Response;
 import guckflix.backend.dto.paging.PagingRequest;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.paging.Slice;
-import guckflix.backend.entity.Actor;
-import guckflix.backend.entity.Credit;
-import guckflix.backend.entity.Movie;
+import guckflix.backend.entity.*;
 import guckflix.backend.exception.NotFoundException;
 import guckflix.backend.repository.ActorRepository;
 import guckflix.backend.repository.CreditRepository;
+import guckflix.backend.repository.GenreRepository;
 import guckflix.backend.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,8 +29,8 @@ public class MovieService {
 
     private final MovieRepository movieRepository;
     private final CreditRepository creditRepository;
-
     private final ActorRepository actorRepository;
+    private final GenreRepository genreRepository;
 
     public Response findById(Long id){
         Movie findMovie = movieRepository.findById(id);
@@ -42,9 +42,8 @@ public class MovieService {
 
     public Paging<Response> findSimilar(Long id, PagingRequest pagingRequest) {
         Movie findMovie = movieRepository.findById(id);
-        String movieGenres = findMovie.getGenres();
-        List<String> genreList = new ArrayList<>(Arrays.asList(movieGenres.split(",")));
-        Paging<Movie> similar = movieRepository.findSimilarByGenres(findMovie.getId(), genreList, pagingRequest);
+
+        Paging<Movie> similar = movieRepository.findSimilarByGenres(findMovie.getId(), findMovie.getMovieGenres(), pagingRequest);
         List<Response> dtos = similar.getList().stream()
                 .map((entity) -> new Response(entity)).collect(Collectors.toList());
         return similar.convert(dtos);
@@ -72,9 +71,71 @@ public class MovieService {
     }
 
     @Transactional
-    public Long save(Post movieDto) {
-        Movie movie = dtoToEntity(movieDto);
+    public Long save(Post post) {
+
+        List<Long> ids = post.getCredits().stream().map(dto -> dto.getActorId()).collect(Collectors.toList());
+
+        Movie movie = createMovie(post);
+        createMovieGenres(post, movie);
+
+        List<Actor> actors = actorRepository.findAllByIds(ids);
+        createCredit(post.getCredits(), actors, movie);
+
         return movieRepository.save(movie);
+    }
+
+    private List<Credit> createCredit(List<CreditDto.Post> creditDtos, List<Actor> actors, Movie movie) {
+
+        List<Credit> credits = new ArrayList<>();
+
+        int maxOrder = 0;
+        for (CreditDto.Post creditDto : creditDtos) {
+            for (Actor actor : actors) {
+                if(actor.getId().equals(creditDto.getActorId())) {
+                    Credit credit = Credit.builder()
+                            .casting(creditDto.getCasting())
+                            .movie(null)
+                            .actor(null)
+                            .order(maxOrder++)
+                            .build();
+                    credits.add(credit);
+                    credit.changeMovie(movie);
+                    credit.changeActor(actor);
+                    creditRepository.save(credit);
+                }
+            }
+        }
+        return credits;
+    }
+
+    private Movie createMovie(Post post) {
+        Movie movie = Movie.builder()
+                .title(post.getTitle())
+                .backdropPath(post.getBackdropPath())
+                .posterPath(post.getPosterPath())
+                .overview(post.getOverview())
+                .releaseDate(post.getReleaseDate())
+                .credits(new ArrayList<>())
+                .videos(new ArrayList<>())
+                .movieGenres(new ArrayList<>())
+                .build();
+        return movie;
+    }
+
+    private List<MovieGenre> createMovieGenres(MovieDto.Post post, Movie movie) {
+        List<MovieGenre> movieGenres = new ArrayList<>();
+        List<Genre> genres = genreRepository.findAll();
+        for (GenreDto dto : post.getGenres()) {
+            for (Genre genre : genres) {
+                if(dto.getId().equals(genre.getId())){
+                    MovieGenre movieGenre = MovieGenre.builder().genre(genre)
+                            .movie(null).build();
+                    movieGenre.changeMovie(movie);
+                    movieGenres.add(movieGenre);
+                }
+            }
+        }
+        return movieGenres;
     }
 
     @Transactional
@@ -109,18 +170,6 @@ public class MovieService {
         for (Credit credit : credits){
             movie.updateCredit(credit); // Movie <-> Credit 양방향 연관관계 설정
         }
-    }
-
-    private Movie dtoToEntity(Post dto) {
-        return Movie.builder()
-                .title(dto.getTitle())
-                .backdropPath(dto.getBackdropPath())
-                .posterPath(dto.getPosterPath())
-                .overview(dto.getOverview())
-                .genres(GenreCached.genreListToString(dto.getGenres()))
-                .releaseDate(dto.getReleaseDate())
-                .credits(new ArrayList<>())
-                .build();
     }
 
     @Transactional

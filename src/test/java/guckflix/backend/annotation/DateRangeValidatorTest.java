@@ -97,7 +97,6 @@ class DateRangeValidatorTest {
         assertThat(errorCodes).contains("{DateRange}");
     }
 
-
     @Test
     @DisplayName("컨트롤러 성공 검증")
     @WithMockUser(roles = {"ADMIN"})
