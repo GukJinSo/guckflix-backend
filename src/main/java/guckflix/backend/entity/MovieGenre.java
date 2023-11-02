@@ -32,6 +32,7 @@ public class MovieGenre {
         }
         if(movie != null){
             movie.getMovieGenres().add(this);
+            this.movie = movie;
         }
     }
 

@@ -25,7 +25,8 @@ public class Movie {
 
     private LocalDate releaseDate;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "movie")
     private List<MovieGenre> movieGenres = new ArrayList<>();
 
     private float popularity;

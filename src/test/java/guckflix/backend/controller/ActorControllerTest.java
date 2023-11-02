@@ -4,6 +4,8 @@ import guckflix.backend.dto.ActorDto;
 import guckflix.backend.dto.CreditDto;
 import guckflix.backend.dto.GenreDto;
 import guckflix.backend.dto.MovieDto;
+import guckflix.backend.entity.Genre;
+import guckflix.backend.repository.GenreRepository;
 import guckflix.backend.service.ActorService;
 import guckflix.backend.service.MovieService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +16,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,30 +40,32 @@ class ActorControllerTest {
     @Autowired ActorService actorService;
     @Autowired MovieService movieService;
 
-    Long savedId;
+    @Autowired
+    GenreRepository genreRepository;
 
-    @BeforeEach
-    private void before(){
+    @Test
+    @WithMockUser
+    @Transactional
+    public void actorController_get_test() throws Exception{
+
+        String genreName = "Fantasy";
+        Genre genre = Genre.builder().genreName(genreName).build();
+        Long savedGenreId = genreRepository.save(genre);
 
         ActorDto.Post actorPost = new ActorDto.Post();
         actorPost.setName("국진");
         actorPost.setCredits(new ArrayList<>());
-        savedId = actorService.save(actorPost);
+        Long savedId = actorService.save(actorPost);
 
         MovieDto.Post movie = new MovieDto.Post();
         movie.setTitle("쇼생크탈출");
         movie.setOverview("감옥에 억울하게 ...");
         movie.setReleaseDate(LocalDate.of(1945,11,26));
-        movie.setGenres(List.of(new GenreDto(14L, "Fantasy")));
+        movie.setGenres(List.of(new GenreDto(savedGenreId, genreName)));
         movie.setCredits(List.of(new CreditDto.Post(savedId, "수감자")));
 
         movieService.save(movie);
 
-    }
-
-    @Test
-    @WithMockUser
-    public void actorController_get_test() throws Exception{
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/actors/"+savedId)

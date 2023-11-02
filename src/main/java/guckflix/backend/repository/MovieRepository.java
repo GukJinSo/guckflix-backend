@@ -5,16 +5,20 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import guckflix.backend.dto.paging.PagingRequest;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.paging.Slice;
-import guckflix.backend.entity.Movie;
-import guckflix.backend.entity.MovieGenre;
+import guckflix.backend.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static guckflix.backend.config.QueryWeight.*;
+import static guckflix.backend.entity.QGenre.genre;
+import static guckflix.backend.entity.QMovie.*;
 import static guckflix.backend.entity.QMovie.movie;
+import static guckflix.backend.entity.QMovieGenre.movieGenre;
 
 
 @Repository
@@ -38,6 +42,12 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
     @Override
     public Movie findById(Long id) {
         return em.find(Movie.class, id);
+    }
+
+    public Movie findByIdFetch(Long id){
+        return em.createQuery("select m from Movie m join fetch m.movieGenres mg join fetch mg.genre g where m.id = :id", Movie.class)
+                .setParameter("id", id)
+                .getSingleResult();
     }
 
     @Override
@@ -92,26 +102,41 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
         return new Slice<>(hasNext, pagingRequest.getRequestPage(), list, pagingRequest.getLimit());
     }
 
-    public Paging<Movie> findSimilarByGenres(Long id, List<MovieGenre> movieGenres, PagingRequest pagingRequest) {
+    public Paging<Movie> findSimilarByGenres(Movie entity, PagingRequest pagingRequest) {
 
-        return null;
-//        BooleanBuilder genreCond = new BooleanBuilder();
-//        for (String genre : genres) {
-//            genreCond.or(movie.genres.contains(genre));
-//        }
-//
-//        List<Movie> list = queryFactory.select(movie)
-//                .from(movie)
-//                .orderBy(movie.popularity.desc())
-//                .where(genreCond.andNot(movie.id.eq(id)))
-//                .offset(pagingRequest.getOffset())
-//                .limit(pagingRequest.getLimit())
-//                .fetch();
-//
-//
-//        int totalCount = selectCountAll().intValue();
-//        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
-//        return new Paging(pagingRequest.getRequestPage(), list, totalCount, totalPage, pagingRequest.getLimit());
+        List<MovieGenre> movieGenres = entity.getMovieGenres();
+        List<Long> genreIds = movieGenres.stream().map(e -> e.getGenre().getId()).collect(Collectors.toList());
+
+        BooleanBuilder genreCond = new BooleanBuilder();
+
+        // 검색한 영화 장르를 포함하면서
+        for (Long genreId : genreIds) {
+            genreCond.or(movieGenre.genre.id.in(genreId));
+        }
+        // 검색한 영화와 같은 MovieGenre 엔티티만 제외
+        for (MovieGenre entitiesMovieGenre : movieGenres) {
+            genreCond.andNot(movieGenre.id.eq(entitiesMovieGenre.getId()));
+        }
+
+        List<MovieGenre> list = queryFactory.select(movieGenre)
+                .from(movieGenre)
+                .join(movieGenre.genre, genre).fetchJoin()
+                .where(genreCond)
+                .offset(pagingRequest.getOffset())
+                .limit(pagingRequest.getLimit())
+                .fetch();
+
+        // 프록시 객체 초기화
+        for (MovieGenre searchedMovieGenre : list) {
+            searchedMovieGenre.getMovie().getId();
+        }
+
+        List<Movie> movies = list.stream().map(e -> e.getMovie())
+                .collect(Collectors.toList());
+
+        int totalCount = selectCountAll().intValue();
+        int totalPage = getTotalPage(totalCount, pagingRequest.getLimit());
+        return new Paging(pagingRequest.getRequestPage(), movies, totalCount, totalPage, pagingRequest.getLimit());
 
     }
 

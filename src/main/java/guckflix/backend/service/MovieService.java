@@ -41,9 +41,9 @@ public class MovieService {
     }
 
     public Paging<Response> findSimilar(Long id, PagingRequest pagingRequest) {
-        Movie findMovie = movieRepository.findById(id);
+        Movie findMovie = movieRepository.findByIdFetch(id);
 
-        Paging<Movie> similar = movieRepository.findSimilarByGenres(findMovie.getId(), findMovie.getMovieGenres(), pagingRequest);
+        Paging<Movie> similar = movieRepository.findSimilarByGenres(findMovie, pagingRequest);
         List<Response> dtos = similar.getList().stream()
                 .map((entity) -> new Response(entity)).collect(Collectors.toList());
         return similar.convert(dtos);

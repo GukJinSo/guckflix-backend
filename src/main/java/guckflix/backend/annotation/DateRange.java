@@ -18,7 +18,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
  *
  * (minYear = 1900, daysFromToday = 30) 현재 시간 2023.10.01일 때, 1900.1.1 ~ 2023.11.01까지의 데이터만 허용
  */
-@Target({PARAMETER, FIELD})
+@Target({FIELD})
 @Retention(value = RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = DateRangeValidator.class)
 public @interface DateRange {
