@@ -44,11 +44,12 @@ public class ApiExceptionHandler {
     public ResponseEntity<ResponseDto> memberDuplicate(DuplicateException e) {
         log.info("DuplicateException", e);
         ResponseDto errorResponse = new ResponseDto(HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT, e.getMessage());
-        return ResponseEntity.badRequest().body(errorResponse);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     /**
      * 요청 Locale에 따라 BindingResult 응답 메세지 변경
+     * https://meetup.nhncloud.com/posts/147
      */
     @ExceptionHandler(value = BindException.class)
     public ResponseEntity<BindErrorDto> bindException(BindException e, Locale locale) {

@@ -45,6 +45,7 @@ public class ActorDto {
         @Getter
         @Setter
         @AllArgsConstructor
+        @ApiModel(value = "ActorDto-ActorPostCredit")
         public static class ActorPostCredit {
 
             @NotBlank
@@ -105,6 +106,7 @@ public class ActorDto {
         @Setter
         @NoArgsConstructor
         @ToString
+        @ApiModel(value = "ActorDto-CreditWithMovieInfo")
         public static class CreditWithMovieInfo {
 
             @JsonProperty("credit_id")
@@ -135,14 +137,15 @@ public class ActorDto {
                 this.order = entity.getOrder();
                 this.creditId = entity.getId();
             }
+
+
         }
-
     }
-
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @ApiModel(value = "ActorDto-UpdateInfo")
     public static class UpdateInfo {
 
         private String name;
@@ -162,5 +165,4 @@ public class ActorDto {
         private String placeOfBirth;
 
     }
-
 }

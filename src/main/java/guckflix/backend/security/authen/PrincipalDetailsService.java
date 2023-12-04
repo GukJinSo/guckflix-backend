@@ -29,8 +29,6 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        System.out.println("loadUser 호출됨");
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication != null){
@@ -42,7 +40,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         if(members.size() != 0){
             return new PrincipalDetails(members.get(0));
         }
-        return null;
+        throw new UsernameNotFoundException("user not found");
     }
 }
 

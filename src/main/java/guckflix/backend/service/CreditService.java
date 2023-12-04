@@ -66,7 +66,7 @@ public class CreditService {
             credit.changeMovie(null);
             credit.changeActor(null);
         } else {
-            throw new NotAllowedIdException("관련 없는 리소스를 잘못 요청했습니다");
+            throw new NotAllowedIdException("requested others resource. not allowed");
         }
     }
 
@@ -77,7 +77,7 @@ public class CreditService {
         if(credit.getMovie().getId().equals(movieId)) {
             credit.update(form.getCasting());
         } else {
-            throw new NotAllowedIdException("관련 없는 리소스를 잘못 요청했습니다");
+            throw new NotAllowedIdException("requested others resource. not allowed");
         }
     }
 

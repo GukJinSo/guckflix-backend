@@ -7,6 +7,8 @@ import guckflix.backend.config.GenreCached;
 import guckflix.backend.entity.Movie;
 import guckflix.backend.entity.MovieGenre;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -116,7 +118,7 @@ public class MovieDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    @ApiModel(value = "MovieDto-Response")
+    @ApiModel(value = "MovieDto-Update")
     public static class Update {
 
         private Long id;

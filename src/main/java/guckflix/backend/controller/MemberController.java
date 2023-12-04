@@ -8,11 +8,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @Api(tags = {"회원 API"})
@@ -24,17 +27,7 @@ public class MemberController {
 
     @PostMapping("/members")
     @ApiOperation(value = "회원가입", notes = "아이디, 비밀번호, 이메일로 회원가입한다")
-    public ResponseEntity join(@Validated @ModelAttribute Post form, BindingResult br) throws BindException {
-        if (br.hasErrors()) {
-            throw new BindException(br);
-        }
-        String savedUsername = memberService.save(form);
-        return ResponseEntity.ok(savedUsername);
-    }
-
-    @PostMapping("/members/login")
-    @ApiOperation(value = "로그인", notes = "아이디, 비밀번호로 로그인 한다")
-    public ResponseEntity login(@Validated @ModelAttribute Post form, BindingResult br) throws BindException {
+    public ResponseEntity join(@Valid @RequestBody Post form, BindingResult br) throws BindException {
         if (br.hasErrors()) {
             throw new BindException(br);
         }
@@ -61,6 +54,18 @@ public class MemberController {
     @ApiOperation(value = "비밀번호 변경", notes = "비밀번호를 변경한다")
     public ResponseEntity password(@Validated @ModelAttribute passwordChangeForm form){
         return ResponseEntity.ok("OK");
+    }
+
+    @GetMapping("/members/usernameCheck")
+    @ApiOperation(value = "유저 아이디 중복 확인", notes = "회원가입 시 사용가능한 유저 아이디인지 체크한다")
+    public ResponseEntity usernameCheck(@Validated @RequestParam(name = "username") String username){
+        String findUsername = memberService.usernameAvailableCheck(username);
+
+        if (findUsername == null) {
+            return ResponseEntity.ok(null);
+        } else {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
     }
 
 

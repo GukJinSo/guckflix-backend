@@ -37,4 +37,13 @@ public class MemberService {
         return member.getUsername();
     }
 
+    public String usernameAvailableCheck(String username) {
+
+        List<Member> users = memberRepository.findByUsername(username);
+        if(users.size() != 0) {
+             return users.get(0).getUsername();
+        } else {
+            return null;
+        }
+    }
 }

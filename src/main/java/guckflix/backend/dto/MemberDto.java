@@ -7,7 +7,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
@@ -21,16 +23,14 @@ public class MemberDto {
     @ApiModel(value = "MemberDto-Post")
     public static class Post{
 
-        @NotBlank
-        @Length(min = 4, max = 40)
+        @Pattern (regexp = "^(?=.*[A-Za-z])[A-Za-z0-9]{4,20}$", message = "아이디 : 영문을 포함한 4 ~ 20자")
         private String username;
 
-        @NotBlank
-        @Length(min = 8, max = 30)
+        @Pattern (regexp = "^(?=.*[A-Z])(?=.*\\d)(?=.*[a-z]).{8,20}$", message = "비밀번호 : 영문 소문자, 대문자, 숫자가 적어도 1개씩 포함된 8 ~ 20자")
         private String password;
 
-        @Length(max = 40)
-        @NotBlank
+        @Email
+        @Length(max = 30)
         private String email;
 
     }
