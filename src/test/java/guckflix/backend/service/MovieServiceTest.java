@@ -100,18 +100,17 @@ class MovieServiceTest {
         );
 
         MovieDto.Update movieUpdateForm = new MovieDto.Update();
-        movieUpdateForm.setId(movie.getId());
         movieUpdateForm.setPosterPath("포스터바뀌었나요??.jpg");
         movieUpdateForm.setBackdropPath("백그라운드바뀌었나요??.jpg");
         movieUpdateForm.setGenres(Arrays.asList(new GenreDto(2L, "Genre Changed")));
         movieUpdateForm.setReleaseDate(LocalDate.of(1982,7,13));
 
-        movieService.update(creditPostForm, movieUpdateForm, movie.getId());
+        movieService.update(movieUpdateForm, movie.getId());
 
         em.flush();
         em.clear();
 
-        Movie findMovie = movieRepository.findById(movieUpdateForm.getId());
+        Movie findMovie = movieRepository.findById(movie.getId());
 
         assertThat(findMovie.getCredits().size()).isEqualTo(3);
         assertThat(findMovie.getReleaseDate()).isEqualTo(LocalDate.of(1982, 7, 13));

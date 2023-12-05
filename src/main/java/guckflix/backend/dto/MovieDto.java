@@ -121,14 +121,22 @@ public class MovieDto {
     @ApiModel(value = "MovieDto-Update")
     public static class Update {
 
-        private Long id;
-
+        @NotBlank
+        @Length(max = 100)
         private String title;
 
+        @NotBlank
+        @Length(max = 1000)
         private String overview;
 
+        @Valid
+        @NotNull
+        @Size(min = 1, max = 10)
         private List<GenreDto> genres;
 
+        @NotNull
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        @DateRange(minYear = 1900, daysFromToday = 30)
         @JsonProperty("release_date")
         private LocalDate releaseDate;
 
@@ -137,6 +145,11 @@ public class MovieDto {
 
         @JsonProperty("poster_path")
         private String posterPath;
+
+        @Valid
+        @NotNull
+        @Size(min = 1)
+        private List<CreditDto.Post> credits;
 
     }
 

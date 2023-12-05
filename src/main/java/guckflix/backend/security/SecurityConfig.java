@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .disable();
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/movies/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH,"/movies/**").hasRole("ADMIN")
                 .anyRequest().permitAll();
         http.httpBasic()
                 .disable();

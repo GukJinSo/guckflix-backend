@@ -163,7 +163,7 @@ public class MovieController {
     @PostMapping(value = "/movies")
     public ResponseEntity post(@Valid @RequestPart MovieDto.Post form,
                                @RequestPart MultipartFile originFile,
-                               @RequestPart MultipartFile w500File, HttpServletRequest request) throws URISyntaxException {
+                               @RequestPart MultipartFile w500File) throws URISyntaxException {
 
         String originUUID = UUID.randomUUID().toString() + ".jpg";
         String w500UUID = UUID.randomUUID().toString() + ".jpg";
@@ -188,18 +188,34 @@ public class MovieController {
                                 @PathVariable Long movieId,
                                 @RequestPart MultipartFile w500File,
                                 @RequestPart MultipartFile originFile,
-                                @RequestPart MovieDto.Update movieUpdateForm,
-                                @RequestPart CreditDto.Patch creditPatchForm){
+                                @RequestPart MovieDto.Update movieUpdateForm){
 
+        // 이미지가 있는 경우 movieUpdateForm에 UUID 지정
+        String w500UUID = null;
+        String originUUID = null;
+
+        if(!w500File.isEmpty()) {
+            w500UUID = UUID.randomUUID().toString()+ ".jpg";
+            movieUpdateForm.setPosterPath(w500UUID);
+        }
+        if(!originFile.isEmpty()) {
+            originUUID = UUID.randomUUID().toString()+".jpg";
+            movieUpdateForm.setBackdropPath(originUUID);
+        }
+
+        // DB 업데이트. 이 때 익셉션이 발생하면 익셉션핸들러를 타므로 아래 파일 업로드와 기존 이미지 삭제는 실행되지 않음
+        movieService.update(movieUpdateForm, movieId);
+
+        // 파일 업로드
+        if(!w500File.isEmpty()) {
+            fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
+        }
+        if(!originFile.isEmpty()) {
+            fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
+        }
+
+        // 기존 이미지 삭제
         MovieDto.Response dto = movieService.findById(movieId);
-        String originUUID = UUID.randomUUID().toString()+".jpg";
-        String w500UUID = UUID.randomUUID().toString()+ ".jpg";
-        movieUpdateForm.setBackdropPath(originUUID);
-        movieUpdateForm.setPosterPath(w500UUID);
-
-//        movieService.update(creditPatchForm, movieUpdateForm, movieId);
-        fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
-        fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
         fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
         fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
 

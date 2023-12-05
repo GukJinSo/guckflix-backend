@@ -139,7 +139,7 @@ public class MovieService {
     }
 
     @Transactional
-    public void update(List<CreditDto.Post> creditPatchForm, MovieDto.Update movieUpdateForm, Long movieId){
+    public void update(MovieDto.Update movieUpdateForm, Long movieId){
 
         Movie movie = movieRepository.findById(movieId);
 
@@ -151,7 +151,7 @@ public class MovieService {
         // 새 Credit 생성
         List<Credit> credits = new ArrayList<>();
         int index = 0;
-        for (CreditDto.Post form : creditPatchForm) {
+        for (CreditDto.Post form : movieUpdateForm.getCredits()) {
             Actor actor = actorRepository.findById(form.getActorId());
             Credit credit = Credit.builder()
                     .actor(actor)
