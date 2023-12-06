@@ -13,7 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode
 public class Credit {
 
-    @Id @GeneratedValue @Column(name = "credit_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "credit_id")
     private Long id;
 
     @Column(length = 500)

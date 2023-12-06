@@ -17,7 +17,7 @@ import java.util.List;
 public class Actor {
 
     @Column(name = "actor_id")
-    @Id @GeneratedValue private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
     private String biography;
 

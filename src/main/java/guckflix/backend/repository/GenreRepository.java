@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class GenreRepository implements CommonRepository<Genre, Long> {

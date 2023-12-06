@@ -24,7 +24,7 @@ public class SecurityConfig {
 
     private final PrincipalOauth2UserService oauth2UserService;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+        private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final AccessDeniedHandler accessDeniedHandler;
     private final LogoutSuccessHandler logoutSuccessHandler;

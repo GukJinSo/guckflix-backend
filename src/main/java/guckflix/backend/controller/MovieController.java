@@ -203,6 +203,9 @@ public class MovieController {
             movieUpdateForm.setBackdropPath(originUUID);
         }
 
+        // 기존 이미지 삭제를 위한 기존 데이터 불러오기
+        MovieDto.Response dto = movieService.findById(movieId);
+        
         // DB 업데이트. 이 때 익셉션이 발생하면 익셉션핸들러를 타므로 아래 파일 업로드와 기존 이미지 삭제는 실행되지 않음
         movieService.update(movieUpdateForm, movieId);
 
@@ -215,7 +218,6 @@ public class MovieController {
         }
 
         // 기존 이미지 삭제
-        MovieDto.Response dto = movieService.findById(movieId);
         fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
         fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
 

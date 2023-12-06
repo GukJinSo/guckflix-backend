@@ -1,17 +1,21 @@
 package guckflix.backend.file;
 
+import guckflix.backend.exception.NotFoundException;
 import guckflix.backend.exception.RuntimeIOException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
  * 파일 업로드 클래스
  */
+@Slf4j
 public class FileUploader {
 
     public void upload(MultipartFile file, String directory, String saveFileName) {
@@ -28,8 +32,11 @@ public class FileUploader {
         Path filePath = Paths.get(FileConst.IMAGE_DIRECTORY_ROOT + "/" + directory + "/" + deleteFileName);
         try {
             Files.delete(filePath);
+
+        } catch (NoSuchFileException e){
+            log.info("File to delete does not exist");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeIOException(e);
         }
     }
 }

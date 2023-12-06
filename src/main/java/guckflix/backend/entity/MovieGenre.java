@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class MovieGenre {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,9 +30,10 @@ public class MovieGenre {
         if(this.movie != null) {
             this.movie.getMovieGenres().remove(this);
         }
+
+        this.movie = movie;
         if(movie != null){
             movie.getMovieGenres().add(this);
-            this.movie = movie;
         }
     }
 

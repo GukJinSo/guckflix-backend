@@ -10,15 +10,13 @@ import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.entity.*;
 import guckflix.backend.exception.NotFoundException;
-import guckflix.backend.repository.ActorRepository;
-import guckflix.backend.repository.CreditRepository;
-import guckflix.backend.repository.GenreRepository;
-import guckflix.backend.repository.MovieRepository;
+import guckflix.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static guckflix.backend.dto.MovieDto.*;
@@ -31,6 +29,8 @@ public class MovieService {
     private final CreditRepository creditRepository;
     private final ActorRepository actorRepository;
     private final GenreRepository genreRepository;
+
+    private final MovieGenreRepository movieGenreRepository;
 
     public Response findById(Long id){
         Movie findMovie = movieRepository.findById(id);
@@ -146,6 +146,24 @@ public class MovieService {
         // 영화에 걸려있는 Credit 삭제
         for (Credit credit : movie.getCredits()) {
             creditRepository.remove(credit);
+        }
+
+        // 영화에 걸려있는 MovieGenre 삭제. orphanRemoval 삭제
+        // ConcurrnetModificationException 때문에 역순으로 삭제
+        List<MovieGenre> movieGenres = movie.getMovieGenres();
+        for (int i = movieGenres.size() - 1; i >= 0; i--){
+            movieGenres.get(i).changeMovie(null);
+        }
+
+        List<Genre> genres = genreRepository.findAll();
+        // List<Genre>를 Map<Long, Genre>로 변환
+        Map<Long, Genre> genreMap = genres.stream()
+                .collect(Collectors.toMap(genre -> genre.getId(), Function.identity()));
+
+        // 새 MovieGenre 생성
+        for (GenreDto genreDto : movieUpdateForm.getGenres()){
+            MovieGenre movieGenre = MovieGenre.builder().movie(movie).genre(genreMap.get(genreDto.getId())).build();
+            movieGenre.changeMovie(movie);
         }
 
         // 새 Credit 생성

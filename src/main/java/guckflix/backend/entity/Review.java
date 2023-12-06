@@ -5,10 +5,7 @@ import guckflix.backend.entity.base.TimeDateBaseEntity;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +17,7 @@ import java.time.LocalDateTime;
 public class Review extends TimeDateBaseEntity {
 
     @Column(name = "review_id")
-    @Id @GeneratedValue private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
     @Column(name = "movie_id")
     private Long movieId;

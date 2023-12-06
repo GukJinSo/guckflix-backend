@@ -91,9 +91,7 @@ class MovieServiceTest {
         actorRepository.save(actor3);
         creditRepository.save(credit);
 
-        List<CreditDto.Post> creditPostForm = new ArrayList<>();
-
-        creditPostForm = Arrays.asList(
+        List<CreditDto.Post> creditPostForm = Arrays.asList(
                 new CreditDto.Post(actor1.getId(), "더덕"),
                 new CreditDto.Post(actor2.getId(), "감자"),
                 new CreditDto.Post(actor3.getId(), "고구마")
@@ -104,6 +102,7 @@ class MovieServiceTest {
         movieUpdateForm.setBackdropPath("백그라운드바뀌었나요??.jpg");
         movieUpdateForm.setGenres(Arrays.asList(new GenreDto(2L, "Genre Changed")));
         movieUpdateForm.setReleaseDate(LocalDate.of(1982,7,13));
+        movieUpdateForm.setCredits(creditPostForm);
 
         movieService.update(movieUpdateForm, movie.getId());
 
@@ -161,7 +160,6 @@ class MovieServiceTest {
                 .isInstanceOf(RuntimeException.class);
 
     }
-
 
 
 }

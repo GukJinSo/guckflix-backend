@@ -16,7 +16,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class Movie {
 
-    @Id @GeneratedValue private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;
 
     private String title;
 
@@ -26,7 +26,7 @@ public class Movie {
     private LocalDate releaseDate;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "movie")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true, mappedBy = "movie")
     private List<MovieGenre> movieGenres = new ArrayList<>();
 
     private float popularity;
