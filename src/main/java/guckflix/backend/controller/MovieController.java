@@ -9,6 +9,7 @@ import guckflix.backend.dto.paging.Slice;
 import guckflix.backend.dto.paging.Paging;
 import guckflix.backend.dto.wrapper.ResponseWrapper;
 import guckflix.backend.entity.Genre;
+import guckflix.backend.exception.RuntimeIOException;
 import guckflix.backend.file.FileConst;
 import guckflix.backend.file.FileUploader;
 import guckflix.backend.repository.GenreRepository;
@@ -165,15 +166,23 @@ public class MovieController {
                                @RequestPart MultipartFile originFile,
                                @RequestPart MultipartFile w500File) throws URISyntaxException {
 
+
+        // form에 세팅할 input 이미지 UUID
         String originUUID = UUID.randomUUID().toString() + ".jpg";
         String w500UUID = UUID.randomUUID().toString() + ".jpg";
         form.setBackdropPath(originUUID);
         form.setPosterPath(w500UUID);
 
+        // DB 업데이트
         Long savedId = movieService.save(form);
 
-        fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
-        fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
+        // 파일 업로드
+        try {
+            fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
+            fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
+        } catch (RuntimeIOException e) {
+            log.warn("The entity was saved but encountered an error processing the file. movie id = " + savedId, e);
+        }
 
         URI location = new URI("/movies/"+savedId);
         return ResponseEntity.created(location).build();
@@ -186,11 +195,11 @@ public class MovieController {
     @ApiOperation(value = "영화 수정", notes = "영화 프로필과 크레딧을 변경")
     public ResponseEntity update(
                                 @PathVariable Long movieId,
-                                @RequestPart MultipartFile w500File,
-                                @RequestPart MultipartFile originFile,
-                                @RequestPart MovieDto.Update movieUpdateForm){
+                                @RequestPart(required = false) MultipartFile w500File,
+                                @RequestPart(required = false) MultipartFile originFile,
+                                @Valid @RequestPart MovieDto.Update movieUpdateForm){
 
-        // 이미지가 있는 경우 movieUpdateForm에 UUID 지정
+        // 이미지가 있는 경우 movieUpdateForm에 수정할 UUID 지정
         String w500UUID = null;
         String originUUID = null;
 
@@ -206,20 +215,22 @@ public class MovieController {
         // 기존 이미지 삭제를 위한 기존 데이터 불러오기
         MovieDto.Response dto = movieService.findById(movieId);
         
-        // DB 업데이트. 이 때 익셉션이 발생하면 익셉션핸들러를 타므로 아래 파일 업로드와 기존 이미지 삭제는 실행되지 않음
+        // DB 업데이트
         movieService.update(movieUpdateForm, movieId);
 
-        // 파일 업로드
-        if(!w500File.isEmpty()) {
-            fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
+        // 파일 업로드 및 삭제
+        try {
+            if(!w500File.isEmpty()) {
+                fileUploader.upload(w500File, FileConst.DIRECTORY_W500, w500UUID);
+                fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
+            }
+            if(!originFile.isEmpty()) {
+                fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
+                fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
+            }
+        } catch (RuntimeIOException e) {
+            log.warn("The entity was updated but encountered an error processing the file. movie id = " + movieId, e);
         }
-        if(!originFile.isEmpty()) {
-            fileUploader.upload(originFile, FileConst.DIRECTORY_ORIGINAL, originUUID);
-        }
-
-        // 기존 이미지 삭제
-        fileUploader.delete(FileConst.DIRECTORY_ORIGINAL, dto.getBackdropPath());
-        fileUploader.delete(FileConst.DIRECTORY_W500, dto.getPosterPath());
 
         return new ResponseEntity(HttpStatus.OK);
     }

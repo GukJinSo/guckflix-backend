@@ -28,9 +28,6 @@ public class MemberController {
     @PostMapping("/members")
     @ApiOperation(value = "회원가입", notes = "아이디, 비밀번호, 이메일로 회원가입한다")
     public ResponseEntity join(@Valid @RequestBody Post form, BindingResult br) throws BindException {
-        if (br.hasErrors()) {
-            throw new BindException(br);
-        }
         String savedUsername = memberService.save(form);
         return ResponseEntity.ok(savedUsername);
     }

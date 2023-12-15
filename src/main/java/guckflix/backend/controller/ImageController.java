@@ -43,7 +43,7 @@ public class ImageController {
             resource = new UrlResource("file", IMAGE_DIRECTORY_ROOT +"/"+ DIRECTORY_PROFILE +"/"+file);
         }
 
-        // 클라이언트 etag랑 비교해서 바뀐 것이 없으면 304 응답
+        // 클라이언트 if-None-Match와 서버 E-Tag를 생성하여 비교해서 바뀐 것이 없으면 본문을 포함하지 않은 304 응답
         String clientETag = req.getHeader("If-None-Match");
         String serverETag = generateETag(resource);
         if (clientETag != null && clientETag.equals(serverETag)) {
@@ -51,7 +51,7 @@ public class ImageController {
             cacheControl(CacheControl.noCache()).eTag(serverETag).build();
         }
 
-        // 최초 요청이면 etag와 함께 200 응답
+        // 최초 요청이거나 바뀐 것이 있으면 etag와 함께 200 응답
         return ResponseEntity.ok().contentType(IMAGE_JPEG)
                 .cacheControl(CacheControl.noCache()) // no-Cache:캐시는 저장하지만 사용할 때마다 서버에 재검증
                 .eTag(generateETag(resource))

@@ -41,12 +41,11 @@ public class ActorController {
     }
 
     @GetMapping("/actors/search")
-    @ApiOperation(value = "배우 검색", notes = "배우를 조회한다")
+    @ApiOperation(value = "배우 검색", notes = "배우를 검색한다")
     public ResponseEntity<Slice> search(@RequestParam String keyword, PagingRequest paging) {
         Slice<ActorDto.Response> actors = actorService.findActorsByKeyword(keyword, paging);
         return ResponseEntity.ok().body(actors);
     }
-
 
     @PostMapping("/actors")
     @ApiOperation(value = "배우 등록", notes = "배우를 등록한다")

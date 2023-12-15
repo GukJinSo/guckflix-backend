@@ -47,6 +47,14 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(value = RuntimeIOException.class)
+    public ResponseEntity<ResponseDto> notFound(RuntimeIOException e) {
+        log.info("RuntimeIOException", e);
+        ResponseDto errorResponse = new ResponseDto(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST, e.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+
     /**
      * 요청 Locale에 따라 BindingResult 응답 메세지 변경
      * https://meetup.nhncloud.com/posts/147

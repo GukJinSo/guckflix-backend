@@ -24,7 +24,7 @@ public class FileUploader {
         try (FileOutputStream fos = new FileOutputStream(FileConst.IMAGE_DIRECTORY_ROOT + "/" + directory + "/" + saveFileName)){
             fos.write(file.getBytes());
         } catch (IOException e){
-             throw new RuntimeIOException("upload error");
+             throw new RuntimeIOException("upload error about fileName : " + saveFileName);
         }
     }
 
@@ -34,7 +34,7 @@ public class FileUploader {
             Files.delete(filePath);
 
         } catch (NoSuchFileException e){
-            log.info("File to delete does not exist");
+            log.info("File to delete does not exist. fileName : " + deleteFileName);
         } catch (IOException e) {
             throw new RuntimeIOException(e);
         }
