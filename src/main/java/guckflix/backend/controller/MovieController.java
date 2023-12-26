@@ -48,6 +48,13 @@ public class MovieController {
 
     private final FileUploader fileUploader;
 
+    @GetMapping("/movies")
+    @ApiOperation(value = "관리자 페이지 쿼리용", notes = "PagingRequest의 검색 키워드, 정렬 기준, 정렬 방향으로 영화 조회")
+    public ResponseEntity<Paging> getMovies(PagingRequest pagingRequest) {
+        Paging<MovieDto.Response> paging = movieService.searchAndSort(pagingRequest);
+        return ResponseEntity.ok(paging);
+    }
+
     /**
      * popularity 기준 페이징
      */

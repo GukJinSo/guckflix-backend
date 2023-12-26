@@ -1,15 +1,17 @@
 package guckflix.backend.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import guckflix.backend.dto.paging.PagingRequest;
-import guckflix.backend.dto.paging.Paging;
-import guckflix.backend.dto.paging.Slice;
+import guckflix.backend.config.SnakeToCamelCaseUtil;
+import guckflix.backend.dto.paging.*;
 import guckflix.backend.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -152,5 +154,42 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
         return em.createQuery("select m from Movie m where m.id in :ids")
                 .setParameter("ids", movieIds)
                 .getResultList();
+    }
+
+    public Paging<Movie> searchAndSort(PagingRequest pagingRequest) {
+
+        // 검색 키워드 설정
+        BooleanBuilder cond = new BooleanBuilder();
+        cond.and(movie.title.like("%"+pagingRequest.getKeyword()+"%"));
+
+        // 정렬 기준, 정렬 방향 설정
+        OrderDirection orderDirection = pagingRequest.getOrderDirection();
+        PathBuilder<Movie> entityPath = new PathBuilder<>(Movie.class, "movie");
+        OrderSpecifier<?> orderSpecifier =
+                orderDirection.equals(OrderDirection.ASC)
+                        ? entityPath.getString(SnakeToCamelCaseUtil.convertSnakeToCamel(pagingRequest.getOrderBy().getCondition())).asc()
+                        : entityPath.getString(SnakeToCamelCaseUtil.convertSnakeToCamel(pagingRequest.getOrderBy().getCondition())).desc();
+
+        // 쿼리
+        List<Movie> list = queryFactory.select(movie)
+                .from(movie)
+                .join(movie.movieGenres, movieGenre).fetchJoin()
+                .join(movieGenre.genre, genre).fetchJoin()
+                .where(cond)
+                .offset(pagingRequest.getOffset())
+                .limit(pagingRequest.getLimit())
+                .orderBy(orderSpecifier)
+                .fetch();
+
+        Long count = queryFactory.select(movie.count())
+                .from(movie)
+                .where(cond)
+                .offset(pagingRequest.getOffset())
+                .limit(pagingRequest.getLimit())
+                .orderBy(orderSpecifier)
+                .fetchCount();
+
+        int totalPage = getTotalPage(count.intValue(), pagingRequest.getLimit());
+        return new Paging(pagingRequest.getRequestPage(), list, count.intValue(), totalPage, pagingRequest.getLimit());
     }
 }

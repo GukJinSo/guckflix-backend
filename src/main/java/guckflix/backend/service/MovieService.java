@@ -204,4 +204,12 @@ public class MovieService {
         movieRepository.remove(movie);
 
     }
+
+    public Paging<Response> searchAndSort(PagingRequest pagingRequest) {
+        Paging<Movie> movies = movieRepository.searchAndSort(pagingRequest);
+
+        List<Response> dtos = movies.getList().stream()
+                .map((entity) -> new Response(entity)).collect(Collectors.toList());
+        return movies.convert(dtos);
+    }
 }

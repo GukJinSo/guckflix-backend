@@ -19,10 +19,19 @@ public class PagingRequest {
 
     private int limit;
 
-    public PagingRequest(int requestPage, int offset, int limit) {
+    private OrderBy orderBy;
+
+    private OrderDirection orderDirection;
+
+    private String keyword;
+
+    public PagingRequest(int requestPage, int offset, int limit, OrderBy orderBy, OrderDirection orderDirection, String keyword) {
         this.requestPage = requestPage;
         this.offset = offset;
         this.limit = limit;
+        this.orderBy = orderBy;
+        this.keyword = keyword;
+        this.orderDirection = orderDirection;
     }
 
 }

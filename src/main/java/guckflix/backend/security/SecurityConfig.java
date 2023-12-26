@@ -114,7 +114,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // 내 서버가 응답 시 자격인증을 받아들일 지 설정
         config.addAllowedOrigin(System.getenv("URL_DEFAULT"));
-        config.addAllowedMethod("*"); // 모든 메서  드 허용
+        config.addAllowedMethod("*"); // 모든 메서드 허용
         config.addAllowedHeader("*");
         config.addExposedHeader("location");
         source.registerCorsConfiguration("/**", config); // 전체에 cors 필터 설정
