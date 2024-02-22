@@ -34,4 +34,13 @@ public class PagingRequest {
         this.orderDirection = orderDirection;
     }
 
+    public static PagingRequest create(int requestPage, int offset, int limit, String keyword) {
+        return new PagingRequest(requestPage, offset, limit, null, null, keyword);
+    }
+
+    public static PagingRequest createWithOrder(int requestPage, int offset, int limit,
+                                                OrderBy orderBy, OrderDirection orderDirection, String keyword) {
+        return new PagingRequest(requestPage, offset, limit, orderBy, orderDirection, keyword);
+    }
+
 }

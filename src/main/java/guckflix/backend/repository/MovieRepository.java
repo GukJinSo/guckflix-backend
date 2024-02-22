@@ -165,21 +165,35 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
         // 정렬 기준, 정렬 방향 설정
         OrderDirection orderDirection = pagingRequest.getOrderDirection();
         PathBuilder<Movie> entityPath = new PathBuilder<>(Movie.class, "movie");
-        OrderSpecifier<?> orderSpecifier =
-                orderDirection.equals(OrderDirection.ASC)
-                        ? entityPath.getString(SnakeToCamelCaseUtil.convertSnakeToCamel(pagingRequest.getOrderBy().getCondition())).asc()
-                        : entityPath.getString(SnakeToCamelCaseUtil.convertSnakeToCamel(pagingRequest.getOrderBy().getCondition())).desc();
+
+        if(orderDirection == null) {
+            orderDirection = OrderDirection.ASC;
+        }
+
+        OrderSpecifier<?> orderSpecifier = orderDirection.equals(OrderDirection.ASC) ?
+                entityPath.getString(SnakeToCamelCaseUtil.convertSnakeToCamel(pagingRequest.getOrderBy().getCondition())).asc()
+                : entityPath.getString(SnakeToCamelCaseUtil.convertSnakeToCamel(pagingRequest.getOrderBy().getCondition())).desc();
 
         // 쿼리
-        List<Movie> list = queryFactory.select(movie)
+        // 1:n을 페치조인 하면 limit 절이 동작하지 않아 OOM 발생할 가능성이 있음
+        List<Movie> movies = queryFactory.select(movie)
                 .from(movie)
-                .join(movie.movieGenres, movieGenre).fetchJoin()
-                .join(movieGenre.genre, genre).fetchJoin()
                 .where(cond)
                 .offset(pagingRequest.getOffset())
                 .limit(pagingRequest.getLimit())
                 .orderBy(orderSpecifier)
                 .fetch();
+
+        // 프록시 초기화. default_batch_fetch_size 또는 @BatchSize으로 in절 처리
+        for (Movie m : movies) {
+            for (MovieGenre mg : m.getMovieGenres()) {
+                mg.getId();
+                mg.getGenre().getId();
+            }
+            for (Credit c : m.getCredits()) {
+                c.getId();
+            }
+        }
 
         Long count = queryFactory.select(movie.count())
                 .from(movie)
@@ -190,6 +204,6 @@ public class MovieRepository implements CommonRepository<Movie, Long> {
                 .fetchCount();
 
         int totalPage = getTotalPage(count.intValue(), pagingRequest.getLimit());
-        return new Paging(pagingRequest.getRequestPage(), list, count.intValue(), totalPage, pagingRequest.getLimit());
+        return new Paging(pagingRequest.getRequestPage(), movies, count.intValue(), totalPage, pagingRequest.getLimit());
     }
 }
