@@ -17,6 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -66,6 +67,7 @@ public class MovieDto {
     @NoArgsConstructor
     @ApiModel(value = "MovieDto-Response")
     public static class Response {
+
         private Long id;
 
         private String title;

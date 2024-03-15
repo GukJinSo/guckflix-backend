@@ -5,11 +5,17 @@ server:
       timeout: 1800
       # 기본 단위는 초이고, 단위가 '60'초이기 때문에 130처럼 2분 10초로 설정하는 경우, session.getMaxInactiveInterval() = 120으로 절사되어 나옴.
 spring:
+  cache:
+    type: redis
+    redis : cache-null-values=true
   datasource:
     url: ${MYSQL_URL}
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
   jpa:
     database: mysql
     hibernate:
@@ -38,5 +44,6 @@ spring:
     basename: errors
 logging.level:
   root: info
+  org.springframework.data.redis: DEBUG
   # org.hibernate.SQL: info
   org.hibernate.type.descriptor.sql.BasicBinder: trace

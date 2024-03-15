@@ -64,6 +64,9 @@ dependencies {
 	// 테스트 환경
 	testImplementation 'com.jayway.jsonpath:json-path:2.6.0'
 
+	// 레디스 클라이언트
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 tasks.named('test') {
