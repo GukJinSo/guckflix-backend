@@ -12,6 +12,7 @@ import guckflix.backend.entity.*;
 import guckflix.backend.exception.NotFoundException;
 import guckflix.backend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -49,6 +50,7 @@ public class MovieService {
         return similar.convert(dtos);
     }
 
+    @Cacheable(cacheManager = "cacheManager", key = "#pagingRequest.requestPage", value="popular")
     public Paging<Response> findPopular(PagingRequest pagingRequest) {
         Paging<Movie> popular = movieRepository.findPopular(pagingRequest);
         List<Response> dtos = popular.getList().stream()
